@@ -30,7 +30,7 @@ cp /etc/resolv.conf /mnt/etc/
 chroot /mnt /bin/bash <<EOF
 apt update
 # ---------- FSTAB ---------- #
-echo "LABEL=BOOT /boot/efi vfat rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro 0 0" >> /etc/fstab
+echo "LABEL=BOOT /boot/efi vfat rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro 0 0" > /etc/fstab
 echo "LABEL=ROOT / ext4 rw,relatime 0 1" >> /etc/fstab
 echo "LABEL=STORE /mnt/STORE ext4 rw,relatime,x-gvfs-show 0 2" >> /etc/fstab
 # ---------- SET TIMEZONE AND LOCALE ---------- #
