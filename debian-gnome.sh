@@ -6,7 +6,6 @@ read -p "Hostname: " -ei "debian" hostname
 read -p "Username: " username
 read -p "Password: " password
 # ---------- PARTITION ---------- #
-lsblk
 read -p "Use cfdisk to create partitions? (Y/n) " show_cfdisk
 if [[ "$show_cfdisk" == "y" || "$show_cfdisk" == "" ]]; then
 	cfdisk
@@ -21,19 +20,26 @@ mkdir -p /mnt/boot/efi
 mount $boot_part /mnt/boot/efi
 # ---------- DEBOOTSTRAP ---------- #
 apt update && apt install debootstrap -y
-debootstrap --include=linux-image-amd64,linux-headers-amd64,nano,git,bash-completion,man-db,flatpak,grub-efi-amd64,locales --arch=amd64 testing /mnt
+debootstrap testing /mnt
 # ---------- PRE-CONFIGURE ---------- #
 echo -e "deb http://deb.debian.org/debian testing main contrib non-free\ndeb-src http://deb.debian.org/debian testing main contrib non-free\ndeb http://deb.debian.org/debian-security/ testing-security main contrib non-free\ndeb-src http://deb.debian.org/debian-security/ testing-security main contrib non-free" > /mnt/etc/apt/sources.list
 for dir in sys dev proc ; do mount --rbind /$dir /mnt/$dir && mount --make-rslave /mnt/$dir ; done
 cp /etc/resolv.conf /mnt/etc/
 # ---------- CHROOT ---------- #
 chroot /mnt /bin/bash <<EOF
+# ---------- INSTALL KERNEL ---------- #
 apt update
+apt install linux-image-amd64 linux-headers-amd64 nano git bash-completion man-db -y
 # ---------- FSTAB ---------- #
 echo "LABEL=BOOT /boot/efi vfat rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro 0 0" > /etc/fstab
 echo "LABEL=ROOT / ext4 rw,relatime 0 1" >> /etc/fstab
 echo "LABEL=STORE /mnt/STORE ext4 rw,relatime,x-gvfs-show 0 2" >> /etc/fstab
+read -p "Edit fstab? (Y/n) " edit_fstab
+if [[ "$edit_fstab" == "y" || "$edit_fstab" == "" ]]; then
+	nano /etc/fstab
+fi
 # ---------- SET TIMEZONE AND LOCALE ---------- #
+apt install locales -y
 dpkg-reconfigure locales
 dpkg-reconfigure tzdata
 # ---------- CREATE USERS ---------- #
@@ -44,9 +50,10 @@ echo "$username:$password" | chpasswd
 echo $hostname > /etc/hostname
 echo -e '127.0.0.1 localhost\n::1\n127.0.1.1 $hostname.localdomain $hostname' > /etc/hosts
 # ---------- INSTALL BOOTLOADER ---------- #
+apt install grub-efi-amd64 -y
 grub-install && update-grub
 # ---------- INSTALL DESKTOP ---------- #
-apt install gnome-core intel-microcode nvidia-driver firmware-misc-nonfree papirus-icon-theme fonts-jetbrains-mono fonts-roboto -y
+apt install gnome-core intel-microcode nvidia-driver firmware-misc-nonfree flatpak papirus-icon-theme fonts-jetbrains-mono fonts-roboto -y
 systemctl enable gdm
 systemctl enable NetworkManager
 # ---------- ADD FLATHUB REPO ---------- #
