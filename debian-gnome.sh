@@ -1,5 +1,5 @@
 #!/bin/bash
-# !!! RUN UNDER THE SUPERUSER !!!
+# !!! RUN UNDER THE SUPERUSER (SUDO) !!!
 # ---------- HOSTNAME ---------- #
 read -p "Hostname: " hostname
 # ---------- USER ---------- #
@@ -12,8 +12,8 @@ if [[ "$show_cfdisk" == "y" || "$show_cfdisk" == "" ]]; then
 	cfdisk
 fi
 lsblk
-read -p "Boot partition: " boot_part -i "/dev/sda1"
-read -p "Root partition: " root_part -i "/dev/sda2"
+read -p "Boot partition: " -ei "/dev/sda1" boot_part
+read -p "Root partition: " -ei "/dev/sda2" root_part
 mkfs.vfat -n BOOT $boot_part
 mkfs.ext4 -F -F -L ROOT $root_part
 mount $root_part /mnt
