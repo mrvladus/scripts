@@ -1,7 +1,7 @@
 #!/bin/bash
 # !!! RUN UNDER THE SUPERUSER (SUDO) !!!
 # ---------- HOSTNAME ---------- #
-read -p "Hostname: " hostname
+read -p "Hostname: " -ei "debian" hostname
 # ---------- USER ---------- #
 read -p "Username: " username
 read -p "Password: " password
@@ -21,7 +21,7 @@ mkdir -p /mnt/boot/efi
 mount $boot_part /mnt/boot/efi
 # ---------- DEBOOTSTRAP ---------- #
 apt update && apt install debootstrap -y
-debootstrap --include=linux-image-amd64,linux-headers-amd64,intel-microcode,nano,git,bash-completion,man-db,flatpak,grub-efi-amd64,locales --arch=amd64 testing /mnt
+debootstrap --include=linux-image-amd64,linux-headers-amd64,nano,git,bash-completion,man-db,flatpak,grub-efi-amd64,locales --arch=amd64 testing /mnt
 # ---------- PRE-CONFIGURE ---------- #
 echo -e "deb http://deb.debian.org/debian testing main contrib non-free\ndeb-src http://deb.debian.org/debian testing main contrib non-free\ndeb http://deb.debian.org/debian-security/ testing-security main contrib non-free\ndeb-src http://deb.debian.org/debian-security/ testing-security main contrib non-free" > /mnt/etc/apt/sources.list
 for dir in sys dev proc ; do mount --rbind /$dir /mnt/$dir && mount --make-rslave /mnt/$dir ; done
@@ -46,7 +46,7 @@ echo -e '127.0.0.1 localhost\n::1\n127.0.1.1 $hostname.localdomain $hostname' > 
 # ---------- INSTALL BOOTLOADER ---------- #
 grub-install && update-grub
 # ---------- INSTALL DESKTOP ---------- #
-apt install gnome-core nvidia-driver firmware-misc-nonfree papirus-icon-theme fonts-jetbrains-mono fonts-roboto -y
+apt install gnome-core intel-microcode nvidia-driver firmware-misc-nonfree papirus-icon-theme fonts-jetbrains-mono fonts-roboto -y
 systemctl enable gdm
 systemctl enable NetworkManager
 # ---------- ADD FLATHUB REPO ---------- #
