@@ -31,13 +31,12 @@ chroot /mnt /bin/bash <<EOF
 apt update
 apt install linux-image-amd64 linux-headers-amd64 nano git bash-completion man-db intel-microcode nvidia-driver firmware-misc-nonfree -y
 # ---------- FSTAB ---------- #
-apt install arch-install-scripts -y
-genfstab -U /mnt >> /mnt/etc/fstab
+echo "LABEL=BOOT /boot/efi vfat rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro 0 0" > /etc/fstab
+echo "LABEL=ROOT / ext4 rw,relatime 0 1" >> /etc/fstab
 read -p "Edit fstab? (Y/n) " edit_fstab
 if [[ "$edit_fstab" == "y" || "$edit_fstab" == "" ]]; then
 	nano /etc/fstab
 fi
-apt purge arch-install-scripts -y
 # ---------- SET TIMEZONE AND LOCALE ---------- #
 apt install locales -y
 dpkg-reconfigure locales
