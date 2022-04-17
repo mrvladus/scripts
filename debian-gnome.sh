@@ -19,8 +19,14 @@ mount $root_part /mnt
 mkdir -p /mnt/boot/efi
 mount $boot_part /mnt/boot/efi
 # ---------- DEBOOTSTRAP ---------- #
-apt update && apt install debootstrap -y
+apt update && apt install debootstrap arch-install-scripts -y
 debootstrap unstable /mnt
+# ---------- FSTAB ---------- #
+genfstab -U /mnt >> /mnt/etc/fstab
+read -p "Edit fstab? (Y/n) " edit_fstab
+if [[ "$edit_fstab" == "y" || "$edit_fstab" == "" ]]; then
+	nano /etc/fstab
+fi
 # ---------- PRE-CONFIGURE ---------- #
 echo -e "deb http://deb.debian.org/debian/ unstable main contrib non-free\ndeb-src http://deb.debian.org/debian/ unstable main contrib non-free" > /mnt/etc/apt/sources.list
 for dir in sys dev proc ; do mount --rbind /$dir /mnt/$dir && mount --make-rslave /mnt/$dir ; done
@@ -30,13 +36,6 @@ chroot /mnt /bin/bash <<EOF
 # ---------- INSTALL KERNEL ---------- #
 apt update
 apt install linux-image-amd64 linux-headers-amd64 nano git bash-completion man-db intel-microcode nvidia-driver firmware-misc-nonfree -y
-# ---------- FSTAB ---------- #
-echo "LABEL=BOOT /boot/efi vfat rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=ascii,shortname=mixed,utf8,errors=remount-ro 0 0" > /etc/fstab
-echo "LABEL=ROOT / ext4 rw,relatime 0 1" >> /etc/fstab
-read -p "Edit fstab? (Y/n) " edit_fstab
-if [[ "$edit_fstab" == "y" || "$edit_fstab" == "" ]]; then
-	nano /etc/fstab
-fi
 # ---------- SET TIMEZONE AND LOCALE ---------- #
 apt install locales -y
 dpkg-reconfigure locales
