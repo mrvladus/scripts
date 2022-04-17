@@ -25,7 +25,7 @@ debootstrap unstable /mnt
 genfstab -U /mnt >> /mnt/etc/fstab
 read -p "Edit fstab? (Y/n) " edit_fstab
 if [[ "$edit_fstab" == "y" || "$edit_fstab" == "" ]]; then
-	nano /etc/fstab
+	nano /mnt/etc/fstab
 fi
 # ---------- PRE-CONFIGURE ---------- #
 echo -e "deb http://deb.debian.org/debian/ unstable main contrib non-free\ndeb-src http://deb.debian.org/debian/ unstable main contrib non-free" > /mnt/etc/apt/sources.list
