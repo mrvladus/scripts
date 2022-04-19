@@ -1,6 +1,6 @@
 #!/bin/bash
 # ---------- AUR PACKAGES ---------- #
-manual='iscan-plugin-perfection-v330'
+manual='iscan-plugin-perfection-v330' # Requires manual answers during installation 
 auto='sublime-text-4 onlyoffice-bin extension-manager pixelorama-bin'
 # ---------- CONFIGURE GNOME  ---------- #
 gsettings set org.gnome.desktop.interface monospace-font-name "JetBrains Mono Regular 10"
