@@ -13,7 +13,7 @@ if [ -f "/bin/yay" ]; then
     echo "YAY already installed. Skipping..."
 else 
     git clone https://aur.archlinux.org/yay-bin
-	cd yay-bin/ && echo y | makepkg -si && cd .. && rm -rf yay-bin && yay
+    cd yay-bin/ && echo y | makepkg -si && cd .. && rm -rf yay-bin && yay
 fi
 # ---------- INSTALL AUR PKGS ---------- #
 yay -S $manual --removemake --needed
