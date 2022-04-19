@@ -1,25 +1,32 @@
 #!/bin/bash
-# ---------- HOSTNAME ---------- #
-read -p "Hostname: " hostname
-# ---------- USER ---------- #
-read -p "Username: " username
-read -p "Password: " password
 # ---------- PACKAGES ---------- #
-basic_programs='bash-completion man neofetch reflector efibootmgr grub flatpak'
-devel='python-gobject git android-tools gtk4-demos libadwaita-demos gtksourceview5'
+basic_programs='bash-completion man neofetch reflector efibootmgr grub'
+devel='git android-tools gtk4-demos libadwaita-demos gtksourceview5'
 gnome='gdm gnome-shell gnome-control-center gnome-remote-desktop gnome-user-share rygel gnome-backgrounds gnome-keyring gnome-terminal nautilus gvfs-goa gvfs-mtp gvfs-nfs simple-scan xdg-user-dirs-gtk gnome-tweaks gst-plugins-good'
 network='networkmanager networkmanager-openvpn'
 drivers='nvidia nvidia-settings'
 looks='ttf-jetbrains-mono ttf-roboto papirus-icon-theme'
+apps='firefox mpv eog evince qbittorrent telegram-desktop godot file-roller gnome-calculator'
+# ---------- CREDENTIALS ---------- #
+read -p "Hostname: " -ei "arch" hostname
+read -p "Username: " username
+read -p "Password: " password
 # ---------- PARTITION ---------- #
 umount -R /mnt
-mkfs.fat -F 32 /dev/sda1 
-mkfs.ext4 -F -F /dev/sda2
-mount /dev/sda2 /mnt
+read -p "Use cfdisk to create partitions? (Y/n) " show_cfdisk
+if [[ "$show_cfdisk" == "y" || "$show_cfdisk" == "" ]]; then
+	cfdisk
+fi
+lsblk
+read -p "Boot partition: " -ei "/dev/sda1" boot_part
+read -p "Root partition: " -ei "/dev/sda2" root_part
+mkfs.vfat $boot_part
+mkfs.ext4 -F -F $root_part
+mount $root_part /mnt
 mkdir -p /mnt/boot/efi
-mount /dev/sda1 /mnt/boot/efi
+mount $boot_part /mnt/boot/efi
 # ---------- UPDATE MIRRORS ---------- #
-reflector --sort rate --latest 20 --save /etc/pacman.d/mirrorlist -c Netherlands
+reflector --sort rate --latest 20 --save /etc/pacman.d/mirrorlist -c Netherlands -p https -p http
 pacman -Syy
 # ---------- CONFIGURE PACMAN ---------- #
 sed -i -e 's/#ParallelDownloads/ParallelDownloads/g' /etc/pacman.conf
@@ -57,8 +64,20 @@ sed -i -e 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=0/g' /etc/default/grub
 sed -i -e 's/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet"/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet nvidia-drm.modeset=1"/g' /etc/default/grub
 grub-mkconfig -o /boot/grub/grub.cfg
 # ---------- INSTALL DESKTOP ---------- #
-pacman -S $gnome $devel $network $drivers $looks --noconfirm
+pacman -S $gnome $devel $network $drivers $looks $apps --noconfirm
 systemctl enable gdm
 systemctl enable NetworkManager
+# ---------- CREATE POST INSTALL SCRIPT ---------- #
+curl https://raw.githubusercontent.com/mrvladus/scripts/main/post-install.sh > /home/$username/post-install.sh
+chmod +x /home/$username/post-install.sh
 EOF
+read -p "Chroot into new system? (y/N) " do_chroot
+if [[ "$do_chroot" == "y" ]]; then
+	arch-chroot /mnt /bin/bash
+fi
 umount -R /mnt
+# ---------- FINISH INSTALL ---------- #
+read -p "Reboot now? (y/N) " do_reboot
+if [[ "$do_reboot" == "y" ]]; then
+	systemctl reboot
+fi
