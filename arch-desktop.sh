@@ -81,7 +81,11 @@ pacman -S $network --noconfirm
 systemctl enable NetworkManager
 # ---------- INSTALL DESKTOP ---------- #
 pacman -S $profile $fstools $cli_programs $devel $drivers $looks $apps --noconfirm
-systemctl enable gdm
+if [[ "$de" == "gnome" ]]; then
+	systemctl enable gdm
+else
+	systemctl enable lightdm
+fi
 # ---------- CREATE POST INSTALL SCRIPT ---------- #
 curl https://raw.githubusercontent.com/mrvladus/scripts/main/post-install.sh > /home/$username/post-install.sh
 chmod 777 /home/$username/post-install.sh
