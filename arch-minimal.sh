@@ -1,12 +1,7 @@
 #!/bin/bash
 # ---------- PACKAGES ---------- #
 basic_programs='bash-completion man neofetch reflector efibootmgr grub'
-devel='git android-tools gtk4-demos libadwaita-demos gtksourceview5'
-gnome='gdm gnome-shell gnome-control-center gnome-remote-desktop gnome-user-share rygel gnome-backgrounds gnome-keyring gnome-terminal nautilus gvfs-goa gvfs-mtp gvfs-nfs simple-scan xdg-user-dirs-gtk gnome-tweaks gst-plugins-good file-roller gnome-calculator'
-network='networkmanager networkmanager-openvpn'
-drivers='nvidia nvidia-settings'
-looks='ttf-jetbrains-mono ttf-roboto papirus-icon-theme'
-apps='firefox mpv eog evince qbittorrent telegram-desktop godot'
+network='networkmanager'
 # ---------- CREDENTIALS ---------- #
 read -p "Hostname: " -ei "arch" hostname
 read -p "Username: " username
@@ -32,12 +27,10 @@ pacman -Syy
 sed -i -e 's/#ParallelDownloads/ParallelDownloads/g' /etc/pacman.conf
 sed -i -e 's/#Color/Color/g' /etc/pacman.conf
 # ---------- INSTALL BASE ---------- #
-pacstrap /mnt base base-devel linux linux-firmware intel-ucode nano $basic_programs
+pacstrap /mnt base linux intel-ucode nano $basic_programs
 genfstab -U /mnt >> /mnt/etc/fstab
 # ---------- CHROOT ---------- #
 arch-chroot /mnt /bin/bash <<EOF
-# ---------- CONFIGURE FSTAB ---------- #
-echo -e "LABEL=STORE /mnt/STORE ext4 rw,relatime,x-gvfs-show 0 1" >> /etc/fstab
 # ---------- SET TIMEZONE AND LOCALE ---------- #
 ln -sf /usr/share/zoneinfo/Europe/Moscow /etc/localtime
 hwclock --systohc
@@ -61,15 +54,10 @@ sed -i -e 's/#Color/Color/g' /etc/pacman.conf
 # ---------- INSTALL BOOTLOADER ---------- #
 grub-install
 sed -i -e 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=0/g' /etc/default/grub
-sed -i -e 's/"loglevel=3 quiet"/"loglevel=3 quiet nvidia-drm.modeset=1"/g' /etc/default/grub
 grub-mkconfig -o /boot/grub/grub.cfg
 # ---------- INSTALL DESKTOP ---------- #
-pacman -S $gnome $devel $network $drivers $looks $apps --noconfirm
-systemctl enable gdm
+pacman -S $network --noconfirm
 systemctl enable NetworkManager
-# ---------- CREATE POST INSTALL SCRIPT ---------- #
-curl https://raw.githubusercontent.com/mrvladus/scripts/main/post-install.sh > /home/$username/post-install.sh
-chmod 777 /home/$username/post-install.sh
 EOF
 read -p "Chroot into new system? (y/N) " do_chroot
 if [[ "$do_chroot" == "y" ]]; then
