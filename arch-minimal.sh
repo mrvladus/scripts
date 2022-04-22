@@ -21,13 +21,13 @@ mount $root_part /mnt
 mkdir -p /mnt/boot/efi
 mount $boot_part /mnt/boot/efi
 # ---------- UPDATE MIRRORS ---------- #
-reflector --sort rate --latest 20 --save /etc/pacman.d/mirrorlist -c Netherlands -p https -p http
+reflector --sort rate --latest 20 --save /etc/pacman.d/mirrorlist -c Netherlands -p http
 pacman -Syy
 # ---------- CONFIGURE PACMAN ---------- #
 sed -i -e 's/#ParallelDownloads/ParallelDownloads/g' /etc/pacman.conf
 sed -i -e 's/#Color/Color/g' /etc/pacman.conf
 # ---------- INSTALL BASE ---------- #
-pacstrap /mnt base linux intel-ucode nano $basic_programs
+pacstrap /mnt base base-devel linux intel-ucode nano $basic_programs
 genfstab -U /mnt >> /mnt/etc/fstab
 # ---------- CHROOT ---------- #
 arch-chroot /mnt /bin/bash <<EOF
