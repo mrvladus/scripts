@@ -8,8 +8,8 @@ drivers='nvidia nvidia-settings'
 looks='ttf-jetbrains-mono ttf-roboto papirus-icon-theme arc-solid-gtk-theme'
 apps='simple-scan'
 # ---------- PROFILES ---------- #
-gnome='gdm gnome-shell gnome-control-center gnome-remote-desktop gnome-user-share rygel gnome-backgrounds gnome-keyring gnome-terminal nautilus gnome-tweaks gst-plugins-good simple-scan'
-xfce='xorg-server lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings thunar thunar-volman thunar-archive-plugin xfce4-panel xfce4-power-manager xfce4-session xfce4-settings xfce4-terminal xfdesktop xfwm4 xfce4-notifyd pulseaudio-alsa pavucontrol xfce4-pulseaudio-plugin xfce4-screensaver xfce4-screenshooter xfce4-whiskermenu-plugin xfce4-xkb-plugin network-manager-applet'
+gnome='gdm gnome-shell gnome-control-center gnome-remote-desktop gnome-user-share rygel gnome-backgrounds gnome-keyring gnome-terminal nautilus gnome-tweaks gst-plugins-good'
+xfce='xorg-server lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings thunar thunar-volman thunar-archive-plugin xfce4-panel xfce4-power-manager xfce4-session xfce4-settings xfce4-terminal xfdesktop xfwm4 xfce4-notifyd xfce4-screensaver xfce4-screenshooter xfce4-whiskermenu-plugin xfce4-xkb-plugin network-manager-applet'
 # ---------- CREDENTIALS ---------- #
 read -p "Hostname: " -ei "arch" hostname
 read -p "Username: " username
