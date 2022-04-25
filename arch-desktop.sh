@@ -1,25 +1,33 @@
 #!/bin/bash
 # ---------- PACKAGES ---------- #
-cli_programs='bash-completion man neofetch reflector flatpak'
-fstools='gvfs-goa gvfs-mtp gvfs-nfs xdg-user-dirs-gtk'
-devel='git android-tools'
-network='networkmanager networkmanager-openvpn'
+cli_programs='bash-completion man neofetch reflector'
+fstools='fuse2 gvfs-mtp gvfs-nfs xdg-user-dirs-gtk'
+devel='git'
+phone='android-tools'
 drivers='nvidia nvidia-settings'
-looks='ttf-jetbrains-mono ttf-roboto papirus-icon-theme arc-solid-gtk-theme'
+looks='ttf-jetbrains-mono ttf-roboto papirus-icon-theme arc-gtk-theme'
 apps='simple-scan'
+desktop_base="$cli_programs $fstools $devel $phone $drivers $looks $apps"
+lightdm="xorg-server lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings"
 # ---------- PROFILES ---------- #
-gnome='gdm gnome-shell gnome-control-center gnome-remote-desktop gnome-user-share rygel gnome-backgrounds gnome-keyring gnome-terminal nautilus gnome-tweaks gst-plugins-good'
-xfce='xorg-server lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings thunar thunar-volman thunar-archive-plugin xfce4-panel xfce4-power-manager xfce4-session xfce4-settings xfce4-terminal xfdesktop xfwm4 xfce4-notifyd xfce4-screensaver xfce4-screenshooter xfce4-whiskermenu-plugin xfce4-xkb-plugin network-manager-applet'
+gnome="$desktop_base gdm gnome-shell gnome-control-center gnome-remote-desktop gnome-user-share rygel gnome-backgrounds gnome-keyring gnome-terminal nautilus gnome-tweaks gst-plugins-good"
+xfce="$desktop_base $lightdm thunar thunar-volman thunar-archive-plugin xfce4-panel xfce4-power-manager xfce4-session xfce4-settings xfce4-terminal xfdesktop xfwm4 xfce4-notifyd xfce4-screensaver xfce4-screenshooter xfce4-whiskermenu-plugin xfce4-xkb-plugin pavucontrol xfce4-pulseaudio-plugin network-manager-applet"
+cinnamon="$desktop_base $lightdm cinnamon cinnamon-translations gnome-keyring gnome-terminal"
+minimal="$cli_programs $devel"
 # ---------- CREDENTIALS ---------- #
 read -p "Hostname: " -ei "arch" hostname
 read -p "Username: " username
 read -p "Password: " password
 # ---------- PROFILE SELECTION ---------- #
-read -p "Type desktop enviroment (gnome, xfce): " -ei "gnome" de
+read -p "Select profile (gnome, xfce, cinnamon, minimal): " -ei "gnome" de
 if [[ "$de" == "gnome" ]]; then
 	profile=$gnome
 elif [[ "$de" == "xfce" ]]; then
 	profile=$xfce
+elif [[ "$de" == "cinnamon" ]]; then
+	profile=$cinnamon
+elif [[ "$de" == "minimal" ]]; then
+	profile=$minimal
 else
 	profile=''
 fi
@@ -29,7 +37,7 @@ read -p "Use cfdisk to create partitions? (Y/n) " show_cfdisk
 if [[ "$show_cfdisk" == "y" || "$show_cfdisk" == "" ]]; then
 	cfdisk
 fi
-lsblk
+clear && lsblk
 read -p "Boot partition: " -ei "/dev/sda1" boot_part
 read -p "Root partition: " -ei "/dev/sda2" root_part
 mkfs.vfat $boot_part
@@ -38,6 +46,7 @@ mount $root_part /mnt
 mkdir -p /mnt/boot/efi
 mount $boot_part /mnt/boot/efi
 # ---------- UPDATE MIRRORS ---------- #
+clear && echo "Updating mirrors..."
 reflector --sort rate --latest 20 --save /etc/pacman.d/mirrorlist -c Netherlands -p https -p http
 pacman -Syy
 # ---------- CONFIGURE PACMAN ---------- #
@@ -77,25 +86,37 @@ sed -i -e 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=0/g' /etc/default/grub
 sed -i -e 's/loglevel=3 quiet/loglevel=3 quiet nvidia-drm.modeset=1/g' /etc/default/grub
 grub-mkconfig -o /boot/grub/grub.cfg
 # ---------- INSTALL NETWORK MANAGER ---------- #
-pacman -S $network --noconfirm
+pacman -S networkmanager networkmanager-openvpn --noconfirm
 systemctl enable NetworkManager
-# ---------- INSTALL DESKTOP ---------- #
-pacman -S $profile $fstools $cli_programs $devel $drivers $looks $apps --noconfirm
+# ---------- INSTALL PROFILE ---------- #
+pacman -S $profile --noconfirm
 if [[ "$de" == "gnome" ]]; then
 	systemctl enable gdm
-else
+elif [[ "$de" == "xfce" ]]; then
 	systemctl enable lightdm
 fi
+# ---------- INSTALL SUBLIME TEXT ---------- #
+clear
+if [[ "$de" != "minimal" ]]; then
+	read -p "Install Sublime Text 4? (Y/n) " install_sublime
+	if [[ "$install_sublime" == "y" || "$install_sublime" == "" ]]; then
+		curl -O https://download.sublimetext.com/sublimehq-pub.gpg && pacman-key --add sublimehq-pub.gpg && pacman-key --lsign-key 8A8F901A && rm sublimehq-pub.gpg
+		echo -e "\n[sublime-text]\nServer = https://download.sublimetext.com/arch/stable/x86_64" | tee -a /etc/pacman.conf
+		pacman -Syu sublime-text
+	fi
+fi
 # ---------- CREATE POST INSTALL SCRIPT ---------- #
+echo "Creating post-install script..."
 curl https://raw.githubusercontent.com/mrvladus/scripts/main/post-install.sh > /home/$username/post-install.sh
 chmod 777 /home/$username/post-install.sh
 EOF
+# ---------- CHROOT ---------- #
 read -p "Chroot into new system? (y/N) " do_chroot
 if [[ "$do_chroot" == "y" ]]; then
 	arch-chroot /mnt /bin/bash
 fi
 umount -R /mnt
-# ---------- FINISH INSTALL ---------- #
+# ---------- REBOOT ---------- #
 read -p "Reboot now? (y/N) " do_reboot
 if [[ "$do_reboot" == "y" ]]; then
 	systemctl reboot
