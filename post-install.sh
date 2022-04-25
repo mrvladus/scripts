@@ -3,7 +3,7 @@
 flatpaks='com.usebottles.bottles org.gnome.eog org.gnome.FileRoller org.mozilla.firefox org.godotengine.Godot org.qbittorrent.qBittorrent org.telegram.desktop org.onlyoffice.desktopeditors org.gnome.Calculator org.gnome.Boxes org.gnome.Evince io.mpv.Mpv com.mattjakeman.ExtensionManager com.github.gi_lom.dialect'
 # ---------- AUR PACKAGES ---------- #
 manual='iscan-plugin-perfection-v330' # Requires manual answers during installation
-auto='sublime-text-4 adw-gtk3-git'
+auto='adw-gtk3-git'
 # ---------- INSTALL YAY ---------- #
 if [ -f "/bin/yay" ]; then
     echo "YAY already installed. Skipping..."
