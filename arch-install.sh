@@ -92,18 +92,18 @@ systemctl enable NetworkManager
 pacman -S $profile --noconfirm
 if [[ "$de" == "gnome" ]]; then
 	systemctl enable gdm
-elif [[ "$de" == "xfce" ]]; then
+elif [[ "$de" == "xfce" || "$de" != "cinnamon" ]]; then
 	systemctl enable lightdm
 fi
 # ---------- INSTALL SUBLIME TEXT ---------- #
-if [[ "$de" != "minimal" ]]; then
+if [[ "$profile" != "$minimal" || "$profile" != "" ]]; then
 	curl -O https://download.sublimetext.com/sublimehq-pub.gpg && pacman-key --add sublimehq-pub.gpg && pacman-key --lsign-key 8A8F901A && rm sublimehq-pub.gpg
 	echo -e "\n[sublime-text]\nServer = https://download.sublimetext.com/arch/stable/x86_64" | tee -a /etc/pacman.conf
 	pacman -Syu sublime-text --noconfirm
 fi
 EOF
 # ---------- CREATE POST INSTALL SCRIPT ---------- #
-if [[ "$de" != "minimal" ]]; then
+if [[ "$profile" != "$minimal" || "$profile" != "" ]]; then
 	clear && echo "Creating post-install script..."
 	cp ./arch-post-install.sh /mnt/home/$username/
 	chmod 777 /mnt/home/$username/arch-post-install.sh
