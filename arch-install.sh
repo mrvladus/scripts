@@ -1,18 +1,18 @@
 #!/bin/bash
 # ---------- PACKAGES ---------- #
 cli_programs='bash-completion man neofetch reflector'
-fstools='fuse2 gvfs-mtp gvfs-nfs xdg-user-dirs-gtk'
+fstools='fuse2 gvfs-{mtp,nfs} xdg-user-dirs-gtk'
 devel='git'
 phone='android-tools'
 drivers='nvidia nvidia-settings'
-looks='ttf-jetbrains-mono ttf-roboto papirus-icon-theme arc-gtk-theme'
+looks='ttf-{jetbrains-mono,roboto} papirus-icon-theme arc-gtk-theme'
 apps='simple-scan'
 desktop_base="$cli_programs $fstools $devel $phone $drivers $looks $apps"
-lightdm="xorg-server lightdm lightdm-gtk-greeter lightdm-gtk-greeter-settings"
+lightdm="xorg-server lightdm lightdm-gtk-{greeter,greeter-settings}"
 # ---------- PROFILES ---------- #
-gnome="$desktop_base gdm gnome-shell gnome-control-center gnome-remote-desktop gnome-user-share rygel gnome-backgrounds gnome-keyring gnome-terminal nautilus gnome-tweaks gst-plugins-good"
-xfce="$desktop_base $lightdm thunar thunar-volman thunar-archive-plugin xfce4-panel xfce4-power-manager xfce4-session xfce4-settings xfce4-terminal xfdesktop xfwm4 xfce4-notifyd xfce4-screensaver xfce4-screenshooter xfce4-whiskermenu-plugin xfce4-xkb-plugin pavucontrol xfce4-pulseaudio-plugin network-manager-applet"
-cinnamon="$desktop_base $lightdm cinnamon cinnamon-translations gnome-keyring gnome-terminal"
+gnome="$desktop_base gdm gnome-{shell,control-center,remote-desktop,user-share,backgrounds,keyring,terminal,tweaks} rygel nautilus gst-plugins-good"
+xfce="$desktop_base $lightdm thunar thunar-{volman,archive-plugin} xfce4-{panel,power-manager,session,settings,terminal,notifyd,screensaver,screenshooter,whiskermenu-plugin,xkb-plugin,pulseaudio-plugin} xfdesktop xfwm4 pavucontrol network-manager-applet"
+cinnamon="$desktop_base $lightdm cinnamon cinnamon-translations gnome-{keyring,terminal}"
 minimal="$cli_programs $devel"
 # ---------- CREDENTIALS ---------- #
 read -p "Hostname: " -ei "arch" hostname
