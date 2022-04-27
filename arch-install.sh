@@ -105,11 +105,10 @@ if [[ "$de" != "minimal" ]]; then
 		pacman -Syu sublime-text --noconfirm
 	fi
 fi
+EOF
 # ---------- CREATE POST INSTALL SCRIPT ---------- #
 echo "Creating post-install script..."
-curl https://raw.githubusercontent.com/mrvladus/scripts/main/post-install.sh > /home/$username/post-install.sh
-chmod 777 /home/$username/post-install.sh
-EOF
+cp ./arch-post-install.sh /mnt/home/$username/
 # ---------- CHROOT ---------- #
 read -p "Chroot into new system? (y/N) " do_chroot
 if [[ "$do_chroot" == "y" ]]; then
