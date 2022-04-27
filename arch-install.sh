@@ -13,7 +13,7 @@ lightdm="xorg-server lightdm lightdm-gtk-{greeter,greeter-settings}"
 gnome="$desktop_base gdm gnome-{shell,control-center,remote-desktop,user-share,backgrounds,keyring,terminal,tweaks} rygel nautilus gst-plugins-good"
 xfce="$desktop_base $lightdm thunar thunar-{volman,archive-plugin} xfce4-{panel,power-manager,session,settings,terminal,notifyd,screensaver,screenshooter,whiskermenu-plugin,xkb-plugin,pulseaudio-plugin} xfdesktop xfwm4 pavucontrol network-manager-applet"
 cinnamon="$desktop_base $lightdm cinnamon cinnamon-translations gnome-{keyring,terminal}"
-minimal="$cli_programs
+minimal="$cli_programs"
 # ---------- CREDENTIALS ---------- #
 read -p "Hostname: " -ei "arch" hostname
 read -p "Username: " username
