@@ -1,8 +1,8 @@
 #!/bin/bash
 # ---------- PACKAGES ---------- #
-cli_programs='bash-completion man neofetch reflector'
+cli_programs='bash-completion man neofetch reflector git'
 fstools='fuse2 gvfs-{mtp,nfs} xdg-user-dirs-gtk'
-devel='git'
+devel=''
 phone='android-tools'
 drivers='nvidia nvidia-settings'
 looks='ttf-{jetbrains-mono,roboto} papirus-icon-theme arc-gtk-theme'
@@ -13,7 +13,7 @@ lightdm="xorg-server lightdm lightdm-gtk-{greeter,greeter-settings}"
 gnome="$desktop_base gdm gnome-{shell,control-center,remote-desktop,user-share,backgrounds,keyring,terminal,tweaks} rygel nautilus gst-plugins-good"
 xfce="$desktop_base $lightdm thunar thunar-{volman,archive-plugin} xfce4-{panel,power-manager,session,settings,terminal,notifyd,screensaver,screenshooter,whiskermenu-plugin,xkb-plugin,pulseaudio-plugin} xfdesktop xfwm4 pavucontrol network-manager-applet"
 cinnamon="$desktop_base $lightdm cinnamon cinnamon-translations gnome-{keyring,terminal}"
-minimal="$cli_programs $devel"
+minimal="$cli_programs
 # ---------- CREDENTIALS ---------- #
 read -p "Hostname: " -ei "arch" hostname
 read -p "Username: " username
@@ -96,19 +96,18 @@ elif [[ "$de" == "xfce" ]]; then
 	systemctl enable lightdm
 fi
 # ---------- INSTALL SUBLIME TEXT ---------- #
-clear
 if [[ "$de" != "minimal" ]]; then
-	read -p "Install Sublime Text 4? (Y/n) " install_sublime
-	if [[ "$install_sublime" == "y" || "$install_sublime" == "" ]]; then
-		curl -O https://download.sublimetext.com/sublimehq-pub.gpg && pacman-key --add sublimehq-pub.gpg && pacman-key --lsign-key 8A8F901A && rm sublimehq-pub.gpg
-		echo -e "\n[sublime-text]\nServer = https://download.sublimetext.com/arch/stable/x86_64" | tee -a /etc/pacman.conf
-		pacman -Syu sublime-text --noconfirm
-	fi
+	curl -O https://download.sublimetext.com/sublimehq-pub.gpg && pacman-key --add sublimehq-pub.gpg && pacman-key --lsign-key 8A8F901A && rm sublimehq-pub.gpg
+	echo -e "\n[sublime-text]\nServer = https://download.sublimetext.com/arch/stable/x86_64" | tee -a /etc/pacman.conf
+	pacman -Syu sublime-text --noconfirm
 fi
 EOF
 # ---------- CREATE POST INSTALL SCRIPT ---------- #
-echo "Creating post-install script..."
-cp ./arch-post-install.sh /mnt/home/$username/
+if [[ "$de" != "minimal" ]]; then
+	clear && echo "Creating post-install script..."
+	cp ./arch-post-install.sh /mnt/home/$username/
+	chmod 777 /mnt/home/$username/arch-post-install.sh
+fi
 # ---------- CHROOT ---------- #
 read -p "Chroot into new system? (y/N) " do_chroot
 if [[ "$do_chroot" == "y" ]]; then
