@@ -1,6 +1,6 @@
 #!/bin/bash
 # ---------- FLATPAK PACKAGES ---------- #
-flatpaks='com.usebottles.bottles org.gnome.eog org.gnome.FileRoller org.mozilla.firefox org.godotengine.Godot org.qbittorrent.qBittorrent org.telegram.desktop org.onlyoffice.desktopeditors org.gnome.Calculator org.gnome.Boxes org.gnome.Evince io.mpv.Mpv com.mattjakeman.ExtensionManager com.github.gi_lom.dialect'
+flatpaks='io.github.shiftey.Desktop org.gnome.Logs com.usebottles.bottles org.gnome.eog org.gnome.FileRoller org.mozilla.firefox org.godotengine.Godot org.qbittorrent.qBittorrent org.telegram.desktop org.onlyoffice.desktopeditors org.gnome.Calculator org.gnome.Boxes org.gnome.Evince io.mpv.Mpv com.mattjakeman.ExtensionManager com.github.gi_lom.dialect'
 # ---------- AUR PACKAGES ---------- #
 manual='iscan-plugin-perfection-v330' # Requires manual answers during installation
 auto='adw-gtk3-git'
