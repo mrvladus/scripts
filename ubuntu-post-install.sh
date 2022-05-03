@@ -1,5 +1,5 @@
 #!/bin/bash
-packages='neofetch sublime-text flatpak simple-scan papirus-icon-theme gnome-tweaks onlyoffice-desktopeditors github-desktop telegram-desktop'
+packages='neofetch sublime-text flatpak simple-scan papirus-icon-theme gnome-tweaks onlyoffice-desktopeditors github-desktop telegram-desktop gjs'
 flatpaks='com.usebottles.bottles org.mozilla.firefox org.godotengine.Godot com.mattjakeman.ExtensionManager org.gnome.design.IconLibrary org.gnome.design.Palette'
 # ---------- SETUP SYSTEM ---------- #
 sudo systemctl disable NetworkManager-wait-online.service
