@@ -6,7 +6,7 @@ devel='git'
 phone='android-tools'
 drivers='nvidia nvidia-settings'
 looks='ttf-{jetbrains-mono,roboto} papirus-icon-theme arc-gtk-theme'
-apps='simple-scan'
+apps='simple-scan flatpak'
 desktop_base="$cli_programs $fstools $devel $phone $drivers $looks $apps"
 lightdm="xorg-server lightdm lightdm-gtk-{greeter,greeter-settings}"
 # ---------- PROFILES ---------- #
