@@ -1,8 +1,8 @@
 #!/bin/bash
 # ---------- PACKAGES ---------- #
-cli_programs='bash-completion man neofetch reflector git'
+cli_programs='bash-completion man neofetch reflector'
 fstools='fuse2 gvfs-{mtp,nfs} xdg-user-dirs-gtk'
-devel=''
+devel='git'
 phone='android-tools'
 drivers='nvidia nvidia-settings'
 looks='ttf-{jetbrains-mono,roboto} papirus-icon-theme arc-gtk-theme'
@@ -13,7 +13,7 @@ lightdm="xorg-server lightdm lightdm-gtk-{greeter,greeter-settings}"
 gnome="$desktop_base gdm gnome-{shell,control-center,remote-desktop,user-share,backgrounds,keyring,terminal,tweaks} rygel nautilus gst-plugins-good"
 xfce="$desktop_base $lightdm thunar thunar-{volman,archive-plugin} xfce4-{panel,power-manager,session,settings,terminal,notifyd,screensaver,screenshooter,whiskermenu-plugin,xkb-plugin,pulseaudio-plugin} xfdesktop xfwm4 pavucontrol network-manager-applet"
 cinnamon="$desktop_base $lightdm cinnamon cinnamon-translations gnome-{keyring,terminal}"
-minimal="$cli_programs"
+minimal="$cli_programs $devel"
 # ---------- CREDENTIALS ---------- #
 read -p "Hostname: " -ei "arch" hostname
 read -p "Username: " username
@@ -90,16 +90,11 @@ pacman -S networkmanager networkmanager-openvpn --noconfirm
 systemctl enable NetworkManager
 # ---------- INSTALL PROFILE ---------- #
 pacman -S $profile --noconfirm
+# ---------- ENABLE DISPLAY MANAGER ---------- #
 if [[ "$de" == "gnome" ]]; then
 	systemctl enable gdm
 elif [[ "$de" == "xfce" || "$de" != "cinnamon" ]]; then
 	systemctl enable lightdm
-fi
-# ---------- INSTALL SUBLIME TEXT ---------- #
-if [[ "$profile" != "$minimal" || "$profile" != "" ]]; then
-	curl -O https://download.sublimetext.com/sublimehq-pub.gpg && pacman-key --add sublimehq-pub.gpg && pacman-key --lsign-key 8A8F901A && rm sublimehq-pub.gpg
-	echo -e "\n[sublime-text]\nServer = https://download.sublimetext.com/arch/stable/x86_64" | tee -a /etc/pacman.conf
-	pacman -Syu sublime-text --noconfirm
 fi
 EOF
 # ---------- CREATE POST INSTALL SCRIPT ---------- #
