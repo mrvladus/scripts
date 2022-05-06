@@ -49,19 +49,19 @@ apt update
 apt install locales -y
 dpkg-reconfigure locales
 dpkg-reconfiigure tzdata
-# ---------- CONFIGURE ROOT USER ---------- #
+# ---------- CONFIGURE USERS ---------- #
+apt install sudo -y
 echo "root:$password" | chpasswd
+useradd -mG sudo $username
+echo "$username:$password" | chpasswd
 # ---------- INSTALL PACKAGES ---------- #
-apt install linux-image-amd64 sudo nano git neofetch bash-completion gnome-core flatpak papirus-icon-theme grub-efi-amd64 os-prober -y --no-install-recommends
+apt install linux-image-amd64 nano git neofetch bash-completion gnome-core flatpak papirus-icon-theme grub-efi-amd64 os-prober -y --no-install-recommends
 # ---------- INSTALL BOOTLOADER ---------- #
 grub-install
 update-grub
 # ---------- ENABLE SERVICES ---------- #
 systemctl enable gdm
 systemctl enable NetworkManager
-# ---------- ADD USER ---------- #
-useradd -mG sudo $username
-echo "$username:$password" | chpasswd
 # ---------- CONFIGURE .bashrc ---------- #
 echo -e "[[ $- != *i* ]] && return\nPS1='[\u@\h \W]\$ '\nalias ls='ls --color=auto'\n" > /home/$username/.bashrc
 EOF
