@@ -15,7 +15,7 @@ if [ -f "/bin/pacman" ]; then
 	pacman -Sy debootstrap arch-install-scripts --noconfirm --needed
 elif [ -f "/bin/apt" ]; then
 	echo "Running on Debian"
-	apt install debootstrap arch-install-scripts -y
+	apt install debootstrap arch-install-scripts dosfstools -y
 fi
 # ---------- CREDENTIALS ---------- #
 read -p "Username: " username
