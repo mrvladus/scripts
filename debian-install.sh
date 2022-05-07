@@ -48,11 +48,11 @@ mount $boot_part /mnt/boot/efi
 read -p "Select branch: stable, testing, unstable " -ei "testing" branch
 debootstrap $branch /mnt
 if [[ "$branch" == "unstable" ]]; then
-	echo "deb http://deb.debian.org/debian/ unstable main contrib non-free" > /mnt/etc/apt/sources.list
+	echo "deb https://deb.debian.org/debian/ unstable main contrib non-free" > /mnt/etc/apt/sources.list
 elif [[ "$branch" == "testing" ]]; then
-	echo "deb http://deb.debian.org/debian/ testing main contrib non-free" > /mnt/etc/apt/sources.list
+	echo "deb https://deb.debian.org/debian/ testing main contrib non-free" > /mnt/etc/apt/sources.list
 else
-	echo -e "deb http://deb.debian.org/debian bullseye main contrib non-free\ndeb http://deb.debian.org/debian-security/ bullseye-security main contrib non-free\ndeb http://deb.debian.org/debian bullseye-updates main contrib non-free\ndeb http://deb.debian.org/debian bullseye-backports main contrib non-free" > /mnt/etc/apt/sources.list
+	echo -e "deb https://deb.debian.org/debian bullseye main contrib non-free\ndeb https://deb.debian.org/debian-security/ bullseye-security main contrib non-free\ndeb https://deb.debian.org/debian bullseye-updates main contrib non-free\ndeb https://deb.debian.org/debian bullseye-backports main contrib non-free" > /mnt/etc/apt/sources.list
 fi
 for dir in sys dev proc ; do
 	mount --rbind /$dir /mnt/$dir && mount --make-rslave /mnt/$dir
