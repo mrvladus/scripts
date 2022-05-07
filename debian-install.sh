@@ -46,16 +46,22 @@ fi
 mount $boot_part /mnt/boot/efi
 # ---------- DEBOOTSTRAP ---------- #
 read -p "Select branch: stable, testing, unstable " -ei "testing" branch
-debootstrap testing /mnt
-echo "deb http://deb.debian.org/debian/ $branch main contrib non-free" > /mnt/etc/apt/sources.list
+debootstrap $branch /mnt
+if [[ "$branch" == "unstable" ]]; then
+	echo "deb http://deb.debian.org/debian/ unstable main contrib non-free" > /mnt/etc/apt/sources.list
+elif [[ "$branch" == "testing" ]]; then
+	echo "deb http://deb.debian.org/debian/ testing main contrib non-free" > /mnt/etc/apt/sources.list
+else
+	echo -e "deb http://deb.debian.org/debian bullseye main contrib non-free\ndeb http://deb.debian.org/debian-security/ bullseye-security main contrib non-free\ndeb http://deb.debian.org/debian bullseye-updates main contrib non-free\ndeb http://deb.debian.org/debian bullseye-backports main contrib non-free" > /mnt/etc/apt/sources.list
+fi
 for dir in sys dev proc ; do
 	mount --rbind /$dir /mnt/$dir && mount --make-rslave /mnt/$dir
 done
+# ---------- CONFIGURE FSTAB ---------- #
 genfstab -U /mnt >> /mnt/etc/fstab
+#echo -e "LABEL=STORE /mnt/STORE ext4 rw,relatime,x-gvfs-show 0 1" >> /mnt/etc/fstab
 # ---------- CHROOT ---------- #
 chroot /mnt /bin/bash <<EOF
-# ---------- CONFIGURE FSTAB ---------- #
-echo -e "LABEL=STORE /mnt/STORE ext4 rw,relatime,x-gvfs-show 0 1" >> /etc/fstab
 # ---------- SET TIMEZONE AND LOCALE ---------- #
 apt update
 apt install locales -y
