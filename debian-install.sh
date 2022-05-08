@@ -1,6 +1,6 @@
 #!/bin/bash
 # ---------- PACKAGES ---------- #
-base='linux-image-amd64 nano bash-completion'
+base='linux-image-amd64 bash-completion'
 de='gnome-core flatpak network-manager-gnome xdg-user-dirs-gtk'
 looks='papirus-icon-theme'
 cli='git neofetch'
@@ -61,10 +61,7 @@ ln -sf /usr/share/zoneinfo/Europe/Moscow /etc/localtime
 hwclock --systohc
 apt update
 apt install locales -y
-sed -i -e 's/#ru_RU.UTF-8 UTF-8/ru_RU.UTF-8 UTF-8/g' /etc/locale.gen
-sed -i -e 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen
-locale-gen
-echo LANG=en_US.UTF-8 > /etc/default/locale
+dpkg-reconfigure locales
 # ---------- CONFIGURE USERS ---------- #
 apt install sudo -y
 echo "root:$password" | chpasswd
@@ -78,12 +75,10 @@ grub-install
 update-grub
 # ---------- ENABLE SERVICES ---------- #
 systemctl enable NetworkManager
+# ---------- SETUP SHELL ---------- #
+chsh -s /bin/bash root
+chsh -s /bin/bash $username
 EOF
-# ---------- CONFIGURE BASH ---------- #
-cp config/.bash_profile /mnt/home/$username/
-chmod 777 /mnt/home/$username/.bash_profile
-cp config/.bashrc /mnt/home/$username/
-chmod 777 /mnt/home/$username/.bashrc
 # ---------- FINISH ---------- #
 umount -R /mnt
 echo "DONE!!!"
