@@ -1,7 +1,7 @@
 #!/bin/bash
 # ---------- PACKAGES ---------- #
 base='linux-image-amd64 nano bash-completion'
-de='gnome-core flatpak'
+de='gnome-core flatpak network-manager-gnome xdg-user-dirs-gtk'
 looks='papirus-icon-theme'
 cli='git neofetch'
 # ---------- SU CHECK ---------- #
@@ -10,13 +10,7 @@ if [ "$(whoami)" != "root" ]; then
     exit
 fi
 # ---------- INSTALL DEBOOTSTRAP ---------- #
-if [ -f "/bin/pacman" ]; then
-	echo "Running on Arch Linux"
-	pacman -Sy debootstrap arch-install-scripts --noconfirm --needed
-elif [ -f "/bin/apt" ]; then
-	echo "Running on Debian"
-	apt install debootstrap arch-install-scripts dosfstools -y
-fi
+apt install debootstrap arch-install-scripts dosfstools -y
 # ---------- CREDENTIALS ---------- #
 read -p "Username: " username
 read -p "Password: " password
@@ -45,7 +39,7 @@ if [[ "$format_boot" == "y" ]]; then
 fi
 mount $boot_part /mnt/boot/efi
 # ---------- DEBOOTSTRAP ---------- #
-read -p "Select branch: stable, testing, unstable " -ei "testing" branch
+read -p "Select branch (stable, testing, unstable): " -ei "testing" branch
 debootstrap $branch /mnt
 if [[ "$branch" == "unstable" ]]; then
 	echo "deb http://deb.debian.org/debian/ unstable main contrib non-free" > /mnt/etc/apt/sources.list
@@ -63,10 +57,14 @@ genfstab -U /mnt >> /mnt/etc/fstab
 # ---------- CHROOT ---------- #
 chroot /mnt /bin/bash <<EOF
 # ---------- SET TIMEZONE AND LOCALE ---------- #
+ln -sf /usr/share/zoneinfo/Europe/Moscow /etc/localtime
+hwclock --systohc
 apt update
 apt install locales -y
-dpkg-reconfigure locales
-dpkg-reconfiigure tzdata
+sed -i -e 's/#ru_RU.UTF-8 UTF-8/ru_RU.UTF-8 UTF-8/g' /etc/locale.gen
+sed -i -e 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/g' /etc/locale.gen
+locale-gen
+echo LANG=en_US.UTF-8 > /etc/default/locale
 # ---------- CONFIGURE USERS ---------- #
 apt install sudo -y
 echo "root:$password" | chpasswd
@@ -79,10 +77,13 @@ apt install grub-efi-amd64 os-prober -y
 grub-install
 update-grub
 # ---------- ENABLE SERVICES ---------- #
-systemctl enable gdm
 systemctl enable NetworkManager
-# ---------- CONFIGURE .bashrc ---------- #
-echo -e "[[ $- != *i* ]] && return\nPS1='[\u@\h \W]\$ '\nalias ls='ls --color=auto'\n" > /home/$username/.bashrc
 EOF
+# ---------- CONFIGURE BASH ---------- #
+cp config/.bash_profile /mnt/home/$username/
+chmod 777 /mnt/home/$username/.bash_profile
+cp config/.bashrc /mnt/home/$username/
+chmod 777 /mnt/home/$username/.bashrc
+# ---------- FINISH ---------- #
 umount -R /mnt
 echo "DONE!!!"
