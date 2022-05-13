@@ -5,9 +5,10 @@ fstools='fuse2 gvfs-{mtp,nfs} xdg-user-dirs-gtk'
 devel='git'
 phone='android-tools'
 drivers='nvidia nvidia-settings'
-looks='ttf-{jetbrains-mono,roboto} papirus-icon-theme arc-gtk-theme'
-apps='simple-scan flatpak'
-desktop_base="$cli_programs $fstools $devel $phone $drivers $looks $apps"
+sound='wireplumber pipewire-{pulse,alsa,jack}'
+looks='ttf-{jetbrains-mono,roboto} papirus-icon-theme'
+apps='gnome-{logs,boxes,calculator} simple-scan godot qbittorrent telegram-desktop eog file-roller evince firefox mpv flatpak'
+desktop_base="$cli_programs $fstools $devel $phone $drivers $sound $looks $apps"
 lightdm="xorg-server lightdm lightdm-gtk-{greeter,greeter-settings}"
 # ---------- PROFILES ---------- #
 gnome="$desktop_base gdm gnome-{shell,control-center,remote-desktop,user-share,backgrounds,keyring,terminal,tweaks} rygel nautilus gst-plugins-good"
@@ -40,10 +41,26 @@ fi
 clear && lsblk
 read -p "Boot partition: " -ei "/dev/sda1" boot_part
 read -p "Root partition: " -ei "/dev/sda2" root_part
+read -p "Choose filesystem: (ext4, btrfs) " -ei "ext4" filesystem
+if [[ "$filesystem" == "ext4" ]]; then
+	mkfs.ext4 -F -F $root_part
+	mount $root_part /mnt
+	mkdir -p /mnt/boot/efi
+elif [[ "$filesystem" == "btrfs" ]]; then
+	mkfs.btrfs -f $root_part
+	mount $root_part /mnt
+	btrfs subvolume create /mnt/@
+	btrfs subvolume create /mnt/@home
+	btrfs subvolume create /mnt/@log
+	umount /mnt
+	mount -o defaults,subvol=@ $root_part /mnt
+	mkdir -p /mnt/{boot/efi,home,var/log}
+	mount -o defaults,subvol=@home $root_part /mnt/home
+	mount -o defaults,subvol=@log $root_part /mnt/var/log
+else
+	exit
+fi
 mkfs.vfat $boot_part
-mkfs.ext4 -F -F $root_part
-mount $root_part /mnt
-mkdir -p /mnt/boot/efi
 mount $boot_part /mnt/boot/efi
 # ---------- UPDATE MIRRORS ---------- #
 clear && echo "Updating mirrors..."

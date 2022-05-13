@@ -20,5 +20,5 @@ gsettings set org.gnome.desktop.interface document-font-name "Roboto Regular 11"
 gsettings set org.gnome.desktop.interface icon-theme "Papirus"
 gsettings set org.gnome.desktop.wm.preferences button-layout ":minimize,maximize,close"
 # ---------- INSTALL FLATPAKS ---------- #
-flatpaks='org.gnome.{Logs,eog,FileRoller,Calculator,Boxes,Evince,design.Palette,design.IconLibrary} io.github.shiftey.Desktop com.usebottles.bottles org.mozilla.firefox org.godotengine.Godot org.qbittorrent.qBittorrent org.telegram.desktop org.onlyoffice.desktopeditors io.mpv.Mpv com.mattjakeman.ExtensionManager com.github.gi_lom.dialect'
+flatpaks='org.gnome.{design.Palette,design.IconLibrary} io.github.shiftey.Desktop com.usebottles.bottles org.onlyoffice.desktopeditors com.mattjakeman.ExtensionManager com.github.gi_lom.dialect'
 flatpak install $flatpaks -y
