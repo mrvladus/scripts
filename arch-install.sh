@@ -4,11 +4,10 @@ cli_programs='bash-completion man neofetch reflector'
 fstools='fuse2 gvfs-{mtp,nfs} xdg-user-dirs-gtk'
 devel='git'
 phone='android-tools'
-drivers='nvidia nvidia-settings'
 sound='wireplumber pipewire-{pulse,alsa,jack}'
 looks='ttf-{jetbrains-mono,roboto} papirus-icon-theme'
 apps='gnome-{logs,boxes,calculator} simple-scan godot qbittorrent telegram-desktop eog file-roller evince firefox mpv flatpak'
-desktop_base="$cli_programs $fstools $devel $phone $drivers $sound $looks $apps"
+desktop_base="$cli_programs $fstools $devel $phone $sound $looks $apps"
 lightdm="xorg-server lightdm lightdm-gtk-{greeter,greeter-settings}"
 # ---------- PROFILES ---------- #
 gnome="$desktop_base gdm gnome-{shell,control-center,remote-desktop,user-share,backgrounds,keyring,terminal,tweaks} rygel nautilus gst-plugins-good"
@@ -31,6 +30,20 @@ elif [[ "$de" == "minimal" ]]; then
 	profile=$minimal
 else
 	profile=''
+fi
+# ---------- DRIVERS SELECTION ---------- #
+read -p "Select video driver (nvidia, vm): " -ei "nvidia" driver
+if [[ "$driver" == "nvidia" ]]; then
+	drivers='nvidia nvidia-settings'
+elif [[ "$driver" == "vm" ]]; then
+	drivers='xf86-video-vmware xf86-input-vmmouse virtualbox-guest-utils'
+else
+	exit
+fi
+# ---------- ADDITIONAL SOFTWARE SELECTION ---------- #
+read -p "Install apps? (Y/n) " -ei "nvidia" install_apps
+if [[ "$install_apps" == "n" ]]; then
+	$apps=''
 fi
 # ---------- PARTITION ---------- #
 umount -R /mnt
@@ -75,7 +88,7 @@ genfstab -U /mnt >> /mnt/etc/fstab
 # ---------- CHROOT ---------- #
 arch-chroot /mnt /bin/bash <<EOF
 # ---------- CONFIGURE FSTAB ---------- #
-echo -e "LABEL=STORE /mnt/STORE ext4 rw,relatime,x-gvfs-show 0 1" >> /etc/fstab
+#echo -e "LABEL=STORE /mnt/STORE ext4 rw,relatime,x-gvfs-show 0 1" >> /etc/fstab
 # ---------- SET TIMEZONE AND LOCALE ---------- #
 ln -sf /usr/share/zoneinfo/Europe/Moscow /etc/localtime
 hwclock --systohc
@@ -92,6 +105,10 @@ sed -i -e 's/# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/g' /etc/sudoers
 echo $hostname > /etc/hostname
 echo -e '127.0.0.1 localhost\n::1\n127.0.1.1 $hostname.localdomain $hostname' >> /etc/hosts
 # ---------- CONFIGURE MKINITCPIO ---------- #
+if [[ "$filesystem" == "btrfs" ]]; then
+	sed -i -e 's/MODULES=()/MODULES=(btrfs)/g' /etc/mkinitcpio.conf
+	sed -i -e 's/HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)/HOOKS=(base udev autodetect modconf block filesystems keyboard)/g' /etc/mkinitcpio.conf
+fi
 mkinitcpio -p linux
 # ---------- CONFIGURE PACMAN ---------- #
 sed -i -e 's/#ParallelDownloads/ParallelDownloads/g' /etc/pacman.conf
@@ -100,13 +117,15 @@ sed -i -e 's/#Color/Color/g' /etc/pacman.conf
 pacman -S efibootmgr grub --noconfirm
 grub-install
 sed -i -e 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=0/g' /etc/default/grub
-sed -i -e 's/loglevel=3 quiet/loglevel=3 quiet nvidia-drm.modeset=1/g' /etc/default/grub
+if [[ "$driver" == "nvidia" ]]; then
+	sed -i -e 's/loglevel=3 quiet/loglevel=3 quiet nvidia-drm.modeset=1/g' /etc/default/grub
+fi
 grub-mkconfig -o /boot/grub/grub.cfg
 # ---------- INSTALL NETWORK MANAGER ---------- #
 pacman -S networkmanager networkmanager-openvpn --noconfirm
 systemctl enable NetworkManager
 # ---------- INSTALL PROFILE ---------- #
-pacman -S $profile --noconfirm
+pacman -S $profile $drivers --noconfirm
 # ---------- ENABLE DISPLAY MANAGER ---------- #
 if [[ "$de" == "gnome" ]]; then
 	systemctl enable gdm
