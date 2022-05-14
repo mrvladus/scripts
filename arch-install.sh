@@ -19,12 +19,12 @@ read -p "Hostname: " -ei "arch" hostname
 read -p "Username: " username
 read -p "Password: " password
 # ---------- PROFILE SELECTION ---------- #
-read -p "Select profile (gnome, xfce, minimal): " -ei "gnome" de
-if [[ "$de" == "gnome" ]]; then
+read -p "Select profile (gnome, xfce, minimal): " -ei "gnome" selected_profile
+if [[ "$selected_profile" == "gnome" ]]; then
 	profile=$gnome
-elif [[ "$de" == "xfce" ]]; then
+elif [[ "$selected_profile" == "xfce" ]]; then
 	profile=$xfce
-elif [[ "$de" == "minimal" ]]; then
+elif [[ "$selected_profile" == "minimal" ]]; then
 	profile=$minimal
 else
 	profile=''
@@ -126,14 +126,14 @@ systemctl enable NetworkManager
 # ---------- INSTALL PROFILE ---------- #
 pacman -S $profile $drivers $apps --noconfirm
 # ---------- ENABLE DISPLAY MANAGER ---------- #
-if [[ "$de" == "gnome" ]]; then
+if [[ "$selected_profile" == "gnome" ]]; then
 	systemctl enable gdm
-elif [[ "$de" == "xfce" || "$de" != "cinnamon" ]]; then
+elif [[ "$selected_profile" == "xfce" ]]; then
 	systemctl enable lightdm
 fi
 EOF
 # ---------- CREATE POST INSTALL SCRIPT ---------- #
-if [[ "$profile" != "$minimal" || "$profile" != "" ]]; then
+if [[ "$selected_profile" != "minimal" || "$selected_profile" != "" ]]; then
 	clear && echo "Creating post-install script..."
 	cp ./arch-post-install.sh /mnt/home/$username/
 	chmod 777 /mnt/home/$username/arch-post-install.sh

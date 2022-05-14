@@ -1,5 +1,5 @@
 #!/bin/bash
-flatpaks='org.gnome.{design.Palette,design.IconLibrary} io.github.shiftey.Desktop com.usebottles.bottles org.onlyoffice.desktopeditors com.mattjakeman.ExtensionManager com.github.gi_lom.dialect'
+flatpaks='org.gnome.design.{Palette,IconLibrary} io.github.shiftey.Desktop com.usebottles.bottles org.onlyoffice.desktopeditors com.github.gi_lom.dialect'
 # ---------- AUR PACKAGES ---------- #
 manual='iscan-plugin-perfection-v330' # Requires manual answers during installation
 auto='adw-gtk3-git sublime-text-4 timeshift-bin'
