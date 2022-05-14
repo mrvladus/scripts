@@ -1,37 +1,35 @@
 #!/bin/bash
+# ---------- APPLICATIONS ---------- #
+apps='simple-scan godot qbittorrent telegram-desktop firefox mpv flatpak'
 # ---------- PACKAGES ---------- #
-cli_programs='bash-completion man neofetch reflector'
+base_system='base base-devel linux linux-firmware intel-ucode nano'
+cli_programs='bash-completion man neofetch reflector bpytop'
 fstools='fuse2 gvfs-{mtp,nfs} xdg-user-dirs-gtk'
-devel='git'
-phone='android-tools'
+devel='git android-tools'
 sound='wireplumber pipewire-{pulse,alsa,jack}'
 looks='ttf-{jetbrains-mono,roboto} papirus-icon-theme'
-apps='gnome-{logs,boxes,calculator} simple-scan godot qbittorrent telegram-desktop eog file-roller evince firefox mpv flatpak'
-desktop_base="$cli_programs $fstools $devel $phone $sound $looks $apps"
+desktop_base="$cli_programs $fstools $devel $sound $looks"
 lightdm="xorg-server lightdm lightdm-gtk-{greeter,greeter-settings}"
 # ---------- PROFILES ---------- #
-gnome="$desktop_base gdm gnome-{shell,control-center,remote-desktop,user-share,backgrounds,keyring,terminal,tweaks} rygel nautilus gst-plugins-good"
-xfce="$desktop_base $lightdm thunar thunar-{volman,archive-plugin} xfce4-{panel,power-manager,session,settings,terminal,notifyd,screensaver,screenshooter,whiskermenu-plugin,xkb-plugin,pulseaudio-plugin} xfdesktop xfwm4 pavucontrol network-manager-applet"
-cinnamon="$desktop_base $lightdm cinnamon cinnamon-translations gnome-{keyring,terminal}"
+gnome="$desktop_base gdm gnome-{shell,control-center,remote-desktop,user-share,backgrounds,keyring,terminal,tweaks,logs,boxes,calculator} rygel nautilus gst-plugins-good eog file-roller evince"
+xfce="$desktop_base $lightdm thunar thunar-{volman,archive-plugin} xfce4-{panel,power-manager,session,settings,terminal,notifyd,screensaver,screenshooter,whiskermenu-plugin,xkb-plugin,pulseaudio-plugin} ristretto xfdesktop xfwm4 pavucontrol network-manager-applet arc-gtk-theme"
 minimal="$cli_programs $devel"
 # ---------- CREDENTIALS ---------- #
 read -p "Hostname: " -ei "arch" hostname
 read -p "Username: " username
 read -p "Password: " password
 # ---------- PROFILE SELECTION ---------- #
-read -p "Select profile (gnome, xfce, cinnamon, minimal): " -ei "gnome" de
+read -p "Select profile (gnome, xfce, minimal): " -ei "gnome" de
 if [[ "$de" == "gnome" ]]; then
 	profile=$gnome
 elif [[ "$de" == "xfce" ]]; then
 	profile=$xfce
-elif [[ "$de" == "cinnamon" ]]; then
-	profile=$cinnamon
 elif [[ "$de" == "minimal" ]]; then
 	profile=$minimal
 else
 	profile=''
 fi
-# ---------- DRIVERS SELECTION ---------- #
+# ---------- VIDEO DRIVERS SELECTION ---------- #
 read -p "Select video driver (nvidia, vm): " -ei "nvidia" driver
 if [[ "$driver" == "nvidia" ]]; then
 	drivers='nvidia nvidia-settings'
@@ -41,7 +39,7 @@ else
 	exit
 fi
 # ---------- ADDITIONAL SOFTWARE SELECTION ---------- #
-read -p "Install apps? (Y/n) " -ei "nvidia" install_apps
+read -p "Install apps? (Y/n) " install_apps
 if [[ "$install_apps" == "n" ]]; then
 	$apps=''
 fi
@@ -70,6 +68,7 @@ elif [[ "$filesystem" == "btrfs" ]]; then
 	mkdir -p /mnt/{boot/efi,home,var/log}
 	mount -o defaults,subvol=@home $root_part /mnt/home
 	mount -o defaults,subvol=@log $root_part /mnt/var/log
+	base_system+=' btrfs-progs'
 else
 	exit
 fi
@@ -83,7 +82,7 @@ pacman -Syy
 sed -i -e 's/#ParallelDownloads/ParallelDownloads/g' /etc/pacman.conf
 sed -i -e 's/#Color/Color/g' /etc/pacman.conf
 # ---------- INSTALL BASE ---------- #
-pacstrap /mnt base base-devel linux linux-firmware intel-ucode nano
+pacstrap /mnt $base_system
 genfstab -U /mnt >> /mnt/etc/fstab
 # ---------- CHROOT ---------- #
 arch-chroot /mnt /bin/bash <<EOF
@@ -125,7 +124,7 @@ grub-mkconfig -o /boot/grub/grub.cfg
 pacman -S networkmanager networkmanager-openvpn --noconfirm
 systemctl enable NetworkManager
 # ---------- INSTALL PROFILE ---------- #
-pacman -S $profile $drivers --noconfirm
+pacman -S $profile $drivers $apps --noconfirm
 # ---------- ENABLE DISPLAY MANAGER ---------- #
 if [[ "$de" == "gnome" ]]; then
 	systemctl enable gdm
