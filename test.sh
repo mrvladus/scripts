@@ -1,2 +1,0 @@
-#!/bin/bash
-sudo pacman -S ttf-jetbrains-mono ttf-roboto papirus-icon-theme arc-solid-gtk-theme gvfs-goa gvfs-mtp gvfs-nfs xdg-user-dirs-gtk android-tools pulseaudio-alsa pavucontrol xfce4-pulseaudio-plugin simple-scan gdm gnome-shell gnome-control-center gnome-remote-desktop gnome-user-share rygel gnome-backgrounds gnome-keyring gnome-terminal nautilus gnome-tweaks gst-plugins-good networkmanager-openvpn

@@ -1,14 +1,14 @@
 #!/bin/bash
-# ---------- APPLICATIONS ---------- #
-apps='simple-scan godot qbittorrent telegram-desktop firefox mpv flatpak'
 # ---------- PACKAGES ---------- #
+apps='simple-scan godot qbittorrent telegram-desktop firefox mpv flatpak'
 base_system='base base-devel linux linux-firmware intel-ucode nano'
 cli_programs='bash-completion man neofetch reflector bpytop'
 fstools='fuse2 gvfs-{mtp,nfs} xdg-user-dirs-gtk'
-devel='git android-tools'
+devel='git'
+phone='android-tools'
 sound='wireplumber pipewire-{pulse,alsa,jack}'
 looks='ttf-{jetbrains-mono,roboto} papirus-icon-theme'
-desktop_base="$cli_programs $fstools $devel $sound $looks"
+desktop_base="$cli_programs $fstools $devel $phone $sound $looks"
 lightdm="xorg-server lightdm lightdm-gtk-{greeter,greeter-settings}"
 # ---------- PROFILES ---------- #
 gnome="$desktop_base gdm gnome-{shell,control-center,remote-desktop,user-share,backgrounds,keyring,terminal,tweaks,logs,boxes,calculator} rygel nautilus gst-plugins-good eog file-roller evince"
