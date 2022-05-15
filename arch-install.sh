@@ -1,7 +1,7 @@
 #!/bin/bash
 # ---------- PACKAGES ---------- #
 apps='simple-scan godot qbittorrent telegram-desktop firefox mpv flatpak'
-base_system='base base-devel linux linux-firmware intel-ucode nano'
+base_system='base base-devel linux intel-ucode nano'
 cli_programs='bash-completion man neofetch reflector bpytop'
 fstools='fuse2 gvfs-{mtp,nfs} xdg-user-dirs-gtk'
 devel='git'
@@ -12,7 +12,7 @@ desktop_base="$cli_programs $fstools $devel $phone $sound $looks"
 lightdm="xorg-server lightdm lightdm-gtk-{greeter,greeter-settings}"
 # ---------- PROFILES ---------- #
 gnome="$desktop_base gdm gnome-{shell,control-center,remote-desktop,user-share,backgrounds,keyring,terminal,tweaks,logs,boxes,calculator} rygel nautilus gst-plugins-good eog file-roller evince"
-xfce="$desktop_base $lightdm thunar thunar-{volman,archive-plugin} xfce4-{panel,power-manager,session,settings,terminal,notifyd,screensaver,screenshooter,whiskermenu-plugin,xkb-plugin,pulseaudio-plugin} ristretto xfdesktop xfwm4 pavucontrol network-manager-applet arc-gtk-theme"
+xfce="$desktop_base $lightdm thunar thunar-{volman,archive-plugin} xfce4-{panel,power-manager,session,settings,terminal,notifyd,screensaver,screenshooter,whiskermenu-plugin,xkb-plugin,pulseaudio-plugin} ristretto xfdesktop xfwm4 file-roller evince pavucontrol network-manager-applet arc-gtk-theme"
 minimal="$cli_programs $devel"
 # ---------- CREDENTIALS ---------- #
 read -p "Hostname: " -ei "arch" hostname
@@ -33,6 +33,7 @@ fi
 read -p "Select video driver (nvidia, vm): " -ei "nvidia" driver
 if [[ "$driver" == "nvidia" ]]; then
 	drivers='nvidia nvidia-settings'
+	base_system+=' linux-firmware'
 elif [[ "$driver" == "vm" ]]; then
 	drivers='xf86-video-vmware xf86-input-vmmouse virtualbox-guest-utils'
 else
