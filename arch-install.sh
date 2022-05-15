@@ -1,35 +1,41 @@
 #!/bin/bash
 # ---------- PACKAGES ---------- #
-apps='simple-scan godot qbittorrent telegram-desktop firefox mpv flatpak'
-base_system='base base-devel linux intel-ucode nano'
+apps='simple-scan godot qbittorrent telegram-desktop firefox mpv file-roller evince flatpak'
+aur_apps='sublime-text-4 onlyoffice-bin github-desktop bottles icon-library pixelorama'
+base_system='base base-devel linux intel-ucode nano git'
 cli_programs='bash-completion man neofetch reflector bpytop'
 fstools='fuse2 gvfs-{mtp,nfs} xdg-user-dirs-gtk'
-devel='git'
+devel=''
 phone='android-tools'
 sound='wireplumber pipewire-{pulse,alsa,jack}'
 looks='ttf-{jetbrains-mono,roboto} papirus-icon-theme'
 desktop_base="$cli_programs $fstools $devel $phone $sound $looks"
 lightdm="xorg-server lightdm lightdm-gtk-{greeter,greeter-settings}"
 # ---------- PROFILES ---------- #
-gnome="$desktop_base gdm gnome-{shell,control-center,remote-desktop,user-share,backgrounds,keyring,terminal,tweaks,logs,boxes,calculator} rygel nautilus gst-plugins-good eog file-roller evince"
-xfce="$desktop_base $lightdm thunar thunar-{volman,archive-plugin} xfce4-{panel,power-manager,session,settings,terminal,notifyd,screensaver,screenshooter,whiskermenu-plugin,xkb-plugin,pulseaudio-plugin} ristretto xfdesktop xfwm4 file-roller evince pavucontrol network-manager-applet arc-gtk-theme"
-minimal="$cli_programs $devel"
+gnome="$desktop_base gdm gnome-{shell,control-center,remote-desktop,user-share,backgrounds,keyring,terminal,tweaks,logs,boxes,calculator} rygel nautilus gst-plugins-good eog"
+xfce="$desktop_base $lightdm thunar thunar-{volman,archive-plugin} xfce4-{panel,power-manager,session,settings,terminal,notifyd,screensaver,screenshooter,whiskermenu-plugin,xkb-plugin,pulseaudio-plugin} ristretto xfdesktop xfwm4 pavucontrol network-manager-applet arc-gtk-theme"
+minimal="$cli_programs"
 # ---------- CREDENTIALS ---------- #
+clear
 read -p "Hostname: " -ei "arch" hostname
 read -p "Username: " username
 read -p "Password: " password
 # ---------- PROFILE SELECTION ---------- #
+clear
 read -p "Select profile (gnome, xfce, minimal): " -ei "gnome" selected_profile
 if [[ "$selected_profile" == "gnome" ]]; then
 	profile=$gnome
+	aur_apps+=" extension-manager-git adw-gtk3-git"
 elif [[ "$selected_profile" == "xfce" ]]; then
 	profile=$xfce
+	aur_apps+=" xfce4-docklike-plugin"
 elif [[ "$selected_profile" == "minimal" ]]; then
 	profile=$minimal
 else
-	profile=''
+	exit
 fi
 # ---------- VIDEO DRIVERS SELECTION ---------- #
+clear
 read -p "Select video driver (nvidia, vm): " -ei "nvidia" driver
 if [[ "$driver" == "nvidia" ]]; then
 	drivers='nvidia nvidia-settings'
@@ -39,13 +45,9 @@ elif [[ "$driver" == "vm" ]]; then
 else
 	exit
 fi
-# ---------- ADDITIONAL SOFTWARE SELECTION ---------- #
-read -p "Install apps? (Y/n) " install_apps
-if [[ "$install_apps" == "n" ]]; then
-	$apps=''
-fi
 # ---------- PARTITION ---------- #
 umount -R /mnt
+clear
 read -p "Use cfdisk to create partitions? (Y/n) " show_cfdisk
 if [[ "$show_cfdisk" == "y" || "$show_cfdisk" == "" ]]; then
 	cfdisk
@@ -70,11 +72,19 @@ elif [[ "$filesystem" == "btrfs" ]]; then
 	mount -o defaults,subvol=@home $root_part /mnt/home
 	mount -o defaults,subvol=@log $root_part /mnt/var/log
 	base_system+=' btrfs-progs'
+	aur_apps+=' timeshift-bin'
 else
 	exit
 fi
 mkfs.vfat $boot_part
 mount $boot_part /mnt/boot/efi
+# ---------- ADDITIONAL SOFTWARE SELECTION ---------- #
+clear
+read -p "Install apps? (Y/n) " install_apps
+if [[ "$install_apps" == "n" ]]; then
+	apps=''
+	aur_apps=''
+fi
 # ---------- UPDATE MIRRORS ---------- #
 clear && echo "Updating mirrors..."
 reflector --sort rate --latest 20 --save /etc/pacman.d/mirrorlist -c Netherlands -p https -p http
@@ -113,6 +123,12 @@ mkinitcpio -p linux
 # ---------- CONFIGURE PACMAN ---------- #
 sed -i -e 's/#ParallelDownloads/ParallelDownloads/g' /etc/pacman.conf
 sed -i -e 's/#Color/Color/g' /etc/pacman.conf
+# --- ADD CHAOTIC AUR --- #
+pacman-key --recv-key FBA220DFC880C036 --keyserver keyserver.ubuntu.com
+pacman-key --lsign-key FBA220DFC880C036
+pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
+echo -e "\n[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist\n" >> /etc/pacman.conf
+pacman -Syy
 # ---------- INSTALL BOOTLOADER ---------- #
 pacman -S efibootmgr grub --noconfirm
 grub-install
@@ -125,7 +141,7 @@ grub-mkconfig -o /boot/grub/grub.cfg
 pacman -S networkmanager networkmanager-openvpn --noconfirm
 systemctl enable NetworkManager
 # ---------- INSTALL PROFILE ---------- #
-pacman -S $profile $drivers $apps --noconfirm
+pacman -S $profile $drivers $apps $aur_apps --noconfirm
 # ---------- ENABLE DISPLAY MANAGER ---------- #
 if [[ "$selected_profile" == "gnome" ]]; then
 	systemctl enable gdm
@@ -134,10 +150,10 @@ elif [[ "$selected_profile" == "xfce" ]]; then
 fi
 EOF
 # ---------- CREATE POST INSTALL SCRIPT ---------- #
-if [[ "$selected_profile" != "minimal" || "$selected_profile" != "" ]]; then
+if [[ "$selected_profile" != "minimal" ]]; then
 	clear && echo "Creating post-install script..."
-	cp ./arch-post-install.sh /mnt/home/$username/
-	chmod 777 /mnt/home/$username/arch-post-install.sh
+	cp ./arch-post-install.sh /mnt/home/$username/post_install.sh
+	chmod 777 /mnt/home/$username/post-install.sh
 fi
 # ---------- CHROOT ---------- #
 read -p "Chroot into new system? (y/N) " do_chroot
@@ -147,6 +163,6 @@ fi
 umount -R /mnt
 # ---------- REBOOT ---------- #
 read -p "Reboot now? (y/N) " do_reboot
-if [[ "$do_reboot" == "y" ]]; then
+if [[ "$do_reboot" == "y" || "$do_reboot" == "Y" ]]; then
 	systemctl reboot
 fi
