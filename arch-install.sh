@@ -1,7 +1,6 @@
 #!/bin/bash
 # ---------- PACKAGES ---------- #
 apps='simple-scan godot qbittorrent telegram-desktop firefox mpv file-roller evince flatpak'
-aur_apps='sublime-text-4 onlyoffice-bin github-desktop bottles icon-library pixelorama'
 base_system='base base-devel linux intel-ucode nano git'
 cli_programs='bash-completion man neofetch reflector bpytop'
 fstools='fuse2 gvfs-{mtp,nfs} xdg-user-dirs-gtk'
@@ -25,10 +24,8 @@ clear
 read -p "Select profile (gnome, xfce, minimal): " -ei "gnome" selected_profile
 if [[ "$selected_profile" == "gnome" ]]; then
 	profile=$gnome
-	aur_apps+=" extension-manager-git adw-gtk3-git"
 elif [[ "$selected_profile" == "xfce" ]]; then
 	profile=$xfce
-	aur_apps+=" xfce4-docklike-plugin"
 elif [[ "$selected_profile" == "minimal" ]]; then
 	profile=$minimal
 else
@@ -44,6 +41,12 @@ elif [[ "$driver" == "vm" ]]; then
 	drivers='xf86-video-vmware xf86-input-vmmouse virtualbox-guest-utils'
 else
 	exit
+fi
+# ---------- ADDITIONAL SOFTWARE SELECTION ---------- #
+clear
+read -p "Install apps? (Y/n) " install_apps
+if [[ "$install_apps" == "n" ]]; then
+	apps=''
 fi
 # ---------- PARTITION ---------- #
 umount -R /mnt
@@ -72,19 +75,11 @@ elif [[ "$filesystem" == "btrfs" ]]; then
 	mount -o defaults,subvol=@home $root_part /mnt/home
 	mount -o defaults,subvol=@log $root_part /mnt/var/log
 	base_system+=' btrfs-progs'
-	aur_apps+=' timeshift-bin'
 else
 	exit
 fi
 mkfs.vfat $boot_part
 mount $boot_part /mnt/boot/efi
-# ---------- ADDITIONAL SOFTWARE SELECTION ---------- #
-clear
-read -p "Install apps? (Y/n) " install_apps
-if [[ "$install_apps" == "n" ]]; then
-	apps=''
-	aur_apps=''
-fi
 # ---------- UPDATE MIRRORS ---------- #
 clear && echo "Updating mirrors..."
 reflector --sort rate --latest 20 --save /etc/pacman.d/mirrorlist -c Netherlands -p https -p http
@@ -123,12 +118,7 @@ mkinitcpio -p linux
 # ---------- CONFIGURE PACMAN ---------- #
 sed -i -e 's/#ParallelDownloads/ParallelDownloads/g' /etc/pacman.conf
 sed -i -e 's/#Color/Color/g' /etc/pacman.conf
-# --- ADD CHAOTIC AUR --- #
-pacman-key --recv-key FBA220DFC880C036 --keyserver keyserver.ubuntu.com
-pacman-key --lsign-key FBA220DFC880C036
-pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
-echo -e "\n[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist\n" >> /etc/pacman.conf
-pacman -Syy
+sudo sed -i -e 's/#[multilib]\n#/[multilib]\n/g' /etc/pacman.conf
 # ---------- INSTALL BOOTLOADER ---------- #
 pacman -S efibootmgr grub --noconfirm
 grub-install
@@ -141,7 +131,7 @@ grub-mkconfig -o /boot/grub/grub.cfg
 pacman -S networkmanager networkmanager-openvpn --noconfirm
 systemctl enable NetworkManager
 # ---------- INSTALL PROFILE ---------- #
-pacman -S $profile $drivers $apps $aur_apps --noconfirm
+pacman -S $profile $drivers $apps --noconfirm
 # ---------- ENABLE DISPLAY MANAGER ---------- #
 if [[ "$selected_profile" == "gnome" ]]; then
 	systemctl enable gdm
