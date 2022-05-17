@@ -118,7 +118,8 @@ mkinitcpio -p linux
 # ---------- CONFIGURE PACMAN ---------- #
 sed -i -e 's/#ParallelDownloads/ParallelDownloads/g' /etc/pacman.conf
 sed -i -e 's/#Color/Color/g' /etc/pacman.conf
-sudo sed -i -e 's/#[multilib]\n#/[multilib]\n/g' /etc/pacman.conf
+sed -i -e 's/#\[multilib]/\[multilib]/g' /etc/pacman.conf
+sed -i -e '/^\[multilib]/{N;s/\n#/\n/}' /etc/pacman.conf
 # ---------- INSTALL BOOTLOADER ---------- #
 pacman -S efibootmgr grub --noconfirm
 grub-install
