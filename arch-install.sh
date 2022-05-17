@@ -1,7 +1,7 @@
 #!/bin/bash
 # ---------- PACKAGES ---------- #
 apps='simple-scan godot qbittorrent telegram-desktop firefox mpv file-roller evince flatpak'
-base_system='base base-devel linux intel-ucode nano git'
+base_system='base base-devel intel-ucode nano git'
 cli_programs='bash-completion man neofetch reflector bpytop'
 fstools='fuse2 gvfs-{mtp,nfs} xdg-user-dirs-gtk'
 devel=''
@@ -19,6 +19,14 @@ clear
 read -p "Hostname: " -ei "arch" hostname
 read -p "Username: " username
 read -p "Password: " password
+# ---------- KERNEL SELECTION ---------- #
+clear
+read -p "Select kernel (linux, linux-lts): " -ei "linux" selected_kernel
+if [[ "$selected_kernel" == "linux" || "$selected_kernel" == "linux-lts" ]]; then
+	base_system="$base_system $selected_kernel"
+else
+	exit
+fi
 # ---------- PROFILE SELECTION ---------- #
 clear
 read -p "Select profile (gnome, xfce, minimal): " -ei "gnome" selected_profile
@@ -35,7 +43,11 @@ fi
 clear
 read -p "Select video driver (nvidia, vm): " -ei "nvidia" driver
 if [[ "$driver" == "nvidia" ]]; then
-	drivers='nvidia nvidia-settings'
+	if [[ "$selected_kernel" == "linux" ]]; then
+		drivers='nvidia nvidia-settings lib32-nvidia-utils'
+	elif [[ "$selected_kernel" == "linux-lts" ]]; then
+		drivers='nvidia-lts nvidia-settings lib32-nvidia-utils'
+	fi
 	base_system+=' linux-firmware'
 elif [[ "$driver" == "vm" ]]; then
 	drivers='xf86-video-vmware xf86-input-vmmouse virtualbox-guest-utils'
