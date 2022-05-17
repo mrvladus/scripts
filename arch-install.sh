@@ -50,7 +50,7 @@ if [[ "$driver" == "nvidia" ]]; then
 	fi
 	base_system+=' linux-firmware'
 elif [[ "$driver" == "vm" ]]; then
-	drivers='xf86-video-vmware xf86-input-vmmouse virtualbox-guest-utils'
+	drivers='xf86-video-vmware xf86-input-vmmouse virtualbox-guest-utils open-vm-tools'
 else
 	exit
 fi
