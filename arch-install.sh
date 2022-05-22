@@ -6,9 +6,8 @@ cli_programs='bash-completion man neofetch reflector bpytop'
 fstools='fuse2 gvfs-{mtp,nfs} xdg-user-dirs-gtk'
 devel=''
 phone='android-tools'
-sound='wireplumber pipewire-{pulse,alsa,jack}'
 looks='ttf-{jetbrains-mono,roboto} papirus-icon-theme'
-desktop_base="$cli_programs $fstools $devel $phone $sound $looks"
+desktop_base="$cli_programs $fstools $devel $phone $looks"
 lightdm="xorg-server lightdm lightdm-gtk-{greeter,greeter-settings}"
 # ---------- PROFILES ---------- #
 gnome="$desktop_base gdm gnome-{shell,control-center,remote-desktop,user-share,backgrounds,keyring,terminal,tweaks,logs,boxes,calculator} rygel nautilus gst-plugins-good eog"
