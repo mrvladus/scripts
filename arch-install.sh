@@ -1,6 +1,5 @@
 #!/bin/bash
 # ---------- PACKAGES ---------- #
-apps='simple-scan godot qbittorrent telegram-desktop firefox mpv file-roller evince flatpak'
 base_system='base base-devel intel-ucode nano git'
 cli_programs='bash-completion man neofetch reflector bpytop'
 fstools='fuse2 gvfs-{mtp,nfs} xdg-user-dirs-gtk'
@@ -52,12 +51,6 @@ elif [[ "$driver" == "vm" ]]; then
 	drivers='xf86-video-vmware xf86-input-vmmouse virtualbox-guest-utils open-vm-tools'
 else
 	exit
-fi
-# ---------- ADDITIONAL SOFTWARE SELECTION ---------- #
-clear
-read -p "Install apps? (Y/n) " install_apps
-if [[ "$install_apps" == "n" ]]; then
-	apps=''
 fi
 # ---------- PARTITION ---------- #
 umount -R /mnt
@@ -143,7 +136,7 @@ grub-mkconfig -o /boot/grub/grub.cfg
 pacman -S networkmanager networkmanager-openvpn --noconfirm
 systemctl enable NetworkManager
 # ---------- INSTALL PROFILE ---------- #
-pacman -S $profile $drivers $apps --noconfirm
+pacman -S $profile $drivers --noconfirm
 # ---------- ENABLE DISPLAY MANAGER ---------- #
 if [[ "$selected_profile" == "gnome" ]]; then
 	systemctl enable gdm

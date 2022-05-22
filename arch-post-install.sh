@@ -1,4 +1,5 @@
 #!/bin/bash
+apps='simple-scan godot qbittorrent telegram-desktop firefox mpv file-roller evince flatpak'
 aur_apps='sublime-text-4 onlyoffice-bin github-desktop bottles icon-library pixelorama timeshift-bin cloudflare-warp-bin'
 if [[ $XDG_SESSION_DESKTOP == 'gnome' ]]; then
 	aur_apps+=" extension-manager-git adw-gtk3-git"
