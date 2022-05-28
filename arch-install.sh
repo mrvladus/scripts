@@ -1,7 +1,7 @@
 #!/bin/bash
 # ---------- PACKAGES ---------- #
 base_system='base base-devel intel-ucode nano git'
-cli_programs='bash-completion man neofetch reflector bpytop'
+cli_programs='bash-completion man neofetch reflector'
 fstools='fuse2 gvfs-{mtp,nfs} xdg-user-dirs-gtk'
 devel=''
 phone='android-tools'

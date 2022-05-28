@@ -1,6 +1,6 @@
 #!/bin/bash
 apps='simple-scan godot qbittorrent telegram-desktop firefox mpv file-roller evince flatpak'
-aur_apps='sublime-text-4 onlyoffice-bin github-desktop bottles icon-library pixelorama timeshift-bin cloudflare-warp-bin'
+aur_apps='onlyoffice-bin visual-studio-code-bin bottles icon-library pixelorama timeshift-bin cloudflare-warp-bin'
 if [[ $XDG_SESSION_DESKTOP == 'gnome' ]]; then
 	aur_apps+=" extension-manager-git adw-gtk3-git"
 elif [[ $XDG_SESSION_DESKTOP == 'xfce' ]]; then
@@ -11,7 +11,7 @@ sudo pacman-key --recv-key FBA220DFC880C036 --keyserver keyserver.ubuntu.com
 sudo pacman-key --lsign-key FBA220DFC880C036
 sudo pacman -U 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-keyring.pkg.tar.zst' 'https://cdn-mirror.chaotic.cx/chaotic-aur/chaotic-mirrorlist.pkg.tar.zst'
 sudo echo -e "\n[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist\n" >> /etc/pacman.conf
-sudo pacman -Syy $aur_apps --noconfirm
+sudo pacman -Syy $apps $aur_apps --noconfirm
 # ---------- CONFIGURE DESKTOP ---------- #
 if [[ $XDG_SESSION_DESKTOP == 'gnome' ]]; then
 	gsettings set org.gnome.desktop.interface gtk-theme "adw-gtk3"
