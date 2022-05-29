@@ -9,7 +9,7 @@ looks='ttf-{jetbrains-mono,roboto} papirus-icon-theme'
 desktop_base="$cli_programs $fstools $devel $phone $looks"
 lightdm="xorg-server lightdm lightdm-gtk-{greeter,greeter-settings}"
 # ---------- PROFILES ---------- #
-gnome="$desktop_base gdm gnome-{shell,control-center,remote-desktop,user-share,backgrounds,keyring,terminal,tweaks,logs,boxes,calculator} rygel nautilus gst-plugins-good eog"
+gnome="$desktop_base gdm gnome-{shell,control-center,remote-desktop,user-share,backgrounds,keyring,terminal,tweaks} rygel nautilus gst-plugins-good eog"
 xfce="$desktop_base $lightdm thunar thunar-{volman,archive-plugin} xfce4-{panel,power-manager,session,settings,terminal,notifyd,screensaver,screenshooter,whiskermenu-plugin,xkb-plugin,pulseaudio-plugin} ristretto xfdesktop xfwm4 pavucontrol network-manager-applet arc-gtk-theme"
 minimal="$cli_programs"
 # ---------- CREDENTIALS ---------- #
@@ -125,7 +125,7 @@ sed -i -e 's/#Color/Color/g' /etc/pacman.conf
 sed -i -e 's/#\[multilib]/\[multilib]/g' /etc/pacman.conf
 sed -i -e '/^\[multilib]/{N;s/\n#/\n/}' /etc/pacman.conf
 # ---------- INSTALL BOOTLOADER ---------- #
-pacman -S efibootmgr grub --noconfirm
+pacman -Syy efibootmgr grub --noconfirm
 grub-install
 sed -i -e 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=0/g' /etc/default/grub
 if [[ "$driver" == "nvidia" ]]; then
@@ -146,7 +146,7 @@ fi
 EOF
 # ---------- CREATE POST INSTALL SCRIPT ---------- #
 if [[ "$selected_profile" != "minimal" ]]; then
-	clear && echo "Creating post-install script..."
+	echo "Creating post-install script..."
 	cp ./arch-post-install.sh /mnt/home/$username/post_install.sh
 	chmod 777 /mnt/home/$username/post-install.sh
 fi
