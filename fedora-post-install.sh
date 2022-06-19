@@ -3,7 +3,7 @@ devel='git python3-pip'
 gnome='gnome-{shell,shell-extension-appindicator,terminal,terminal-nautilus,backgrounds,tweaks,shell-extension-app,calculator,boxes,logs,disk-utility,keyring} nautilus file-roller gvfs-{mtp,nfs} eog evince evince-djvu chrome-gnome-shell'
 looks='papirus-icon-theme jetbrains-mono-fonts'
 apps='firefox simple-scan mpv bottles steam telegram-desktop code qbittorrent godot onlyoffice-desktopeditors protonvpn'
-pkgs="$cli $gnome $looks $apps"
+pkgs="$cli $gnome $looks $apps $devel"
 # ---------- CONFIGURE SYSTEM ---------- #
 # Set hostbame
 sudo echo fedora > /etc/hostname
@@ -27,6 +27,8 @@ sudo echo -e '[protonvpn-fedora-stable]\nname = ProtonVPN Fedora Stable reposito
 sudo dnf update -y
 # Install software
 sudo dnf install $apps -y
+# Install python modules
+pip3 install --user dnspython # ProtonVPN stuff
 # Cleanup
 sudo dnf autoremove -y
 # ---------- CONFIGURE GNOME ---------- #
