@@ -2,20 +2,21 @@ cli='bash-completion android-tools neofetch flatpak'
 devel='git python3-pip'
 gnome='gnome-{shell,shell-extension-appindicator,terminal,terminal-nautilus,backgrounds,tweaks,shell-extension-app,calculator,boxes,logs,disk-utility,keyring} nautilus file-roller gvfs-{mtp,nfs} eog evince evince-djvu chrome-gnome-shell'
 looks='papirus-icon-theme jetbrains-mono-fonts'
-apps='firefox simple-scan mpv bottles steam telegram-desktop code qbittorrent godot onlyoffice-desktopeditors protonvpn'
-pkgs="$cli $gnome $looks $apps $devel"
+games='gamemode gnome-shell-extension-gamemode bottles steam'
+apps='firefox simple-scan mpv telegram-desktop code qbittorrent godot onlyoffice-desktopeditors protonvpn'
+pkgs="$cli $gnome $games $looks $apps $devel"
 # ---------- CONFIGURE SYSTEM ---------- #
 # Set hostbame
 sudo echo fedora > /etc/hostname
 # Configure dnf
 sudo echo assumeyes=True >> /etc/dnf/dnf.conf
-sudo echo install_weak_deps=False >> /etc/dnf/dnf.conf
+#sudo echo install_weak_deps=False >> /etc/dnf/dnf.conf
 sudo echo fastestmirror=True >> /etc/dnf/dnf.conf
 sudo echo max_parallel_downloads=10 >> /etc/dnf/dnf.conf
 # Flathub
 sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 # RPM Fusion
-sudo dnf install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+sudo dnf install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm -y
 # ONLYOFFICE
 sudo dnf install https://download.onlyoffice.com/repo/centos/main/noarch/onlyoffice-repo.noarch.rpm -y
 # VSCode
@@ -26,9 +27,9 @@ sudo echo -e '[protonvpn-fedora-stable]\nname = ProtonVPN Fedora Stable reposito
 # Update repos
 sudo dnf update -y
 # Install software
-sudo dnf install $apps -y
+sudo dnf install $pkgs -y
 # Install python modules
-pip3 install --user dnspython # ProtonVPN stuff
+pip3 install --user --no-input dnspython
 # Cleanup
 sudo dnf autoremove -y
 # ---------- CONFIGURE GNOME ---------- #
