@@ -1,7 +1,8 @@
 cli='bash-completion android-tools neofetch flatpak'
-gnome='gnome-{shell,terminal,terminal-nautilus,backgrounds,tweaks,shell-extension-app,calculator,boxes,logs,disk-utility,keyring} nautilus file-roller gvfs-{mtp,nfs} eog evince evince-djvu chrome-gnome-shell'
+devel='git python3-pip'
+gnome='gnome-{shell,shell-extension-appindicator,terminal,terminal-nautilus,backgrounds,tweaks,shell-extension-app,calculator,boxes,logs,disk-utility,keyring} nautilus file-roller gvfs-{mtp,nfs} eog evince evince-djvu chrome-gnome-shell'
 looks='papirus-icon-theme jetbrains-mono-fonts'
-apps='firefox simple-scan mpv bottles steam telegram-desktop code qbittorrent godot onlyoffice-desktopeditors'
+apps='firefox simple-scan mpv bottles steam telegram-desktop code qbittorrent godot onlyoffice-desktopeditors protonvpn'
 pkgs="$cli $gnome $looks $apps"
 # ---------- CONFIGURE SYSTEM ---------- #
 # Set hostbame
@@ -19,7 +20,9 @@ sudo dnf install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-releas
 sudo dnf install https://download.onlyoffice.com/repo/centos/main/noarch/onlyoffice-repo.noarch.rpm -y
 # VSCode
 sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo'
+sudo echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/yum.repos.d/vscode.repo
+# ProtonVPN
+sudo echo -e '[protonvpn-fedora-stable]\nname = ProtonVPN Fedora Stable repository\nbaseurl = https://repo.protonvpn.com/fedora-$releasever-stable\nenabled = 1\ngpgcheck = 1\nrepo_gpgcheck=1n\gpgkey = https://repo.protonvpn.com/fedora-$releasever-stable/public_key.asc' > /etc/yum.repos.d/protonvpn-stable.repo
 # Update repos
 sudo dnf update -y
 # Install software
