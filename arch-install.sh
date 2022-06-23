@@ -7,10 +7,8 @@ devel=''
 phone='android-tools'
 looks='ttf-{jetbrains-mono,roboto} papirus-icon-theme'
 desktop_base="$cli_programs $fstools $devel $phone $looks"
-lightdm="xorg-server lightdm lightdm-gtk-{greeter,greeter-settings}"
 # ---------- PROFILES ---------- #
 gnome="$desktop_base gdm gnome-{shell,control-center,remote-desktop,user-share,backgrounds,keyring,terminal} power-profiles-daemon rygel nautilus gst-plugins-good"
-xfce="$desktop_base $lightdm thunar thunar-{volman,archive-plugin} xfce4-{panel,power-manager,session,settings,terminal,notifyd,screensaver,screenshooter,whiskermenu-plugin,xkb-plugin,pulseaudio-plugin} ristretto xfdesktop xfwm4 pavucontrol network-manager-applet arc-gtk-theme"
 minimal="$cli_programs"
 # ---------- CREDENTIALS ---------- #
 clear
@@ -30,8 +28,6 @@ clear
 read -p "Select profile (gnome, xfce, minimal): " -ei "gnome" selected_profile
 if [[ "$selected_profile" == "gnome" ]]; then
 	profile=$gnome
-elif [[ "$selected_profile" == "xfce" ]]; then
-	profile=$xfce
 elif [[ "$selected_profile" == "minimal" ]]; then
 	profile=$minimal
 else
@@ -118,7 +114,7 @@ if [[ "$filesystem" == "btrfs" ]]; then
 	sed -i -e 's/MODULES=()/MODULES=(btrfs)/g' /etc/mkinitcpio.conf
 	sed -i -e 's/HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)/HOOKS=(base udev autodetect modconf block filesystems keyboard)/g' /etc/mkinitcpio.conf
 fi
-mkinitcpio -p linux
+mkinitcpio -p $selected_kernel
 # ---------- CONFIGURE PACMAN ---------- #
 sed -i -e 's/#ParallelDownloads/ParallelDownloads/g' /etc/pacman.conf
 sed -i -e 's/#Color/Color/g' /etc/pacman.conf
@@ -140,15 +136,13 @@ pacman -S $profile $drivers --noconfirm
 # ---------- ENABLE DISPLAY MANAGER ---------- #
 if [[ "$selected_profile" == "gnome" ]]; then
 	systemctl enable gdm
-elif [[ "$selected_profile" == "xfce" ]]; then
-	systemctl enable lightdm
 fi
 EOF
 # ---------- CREATE POST INSTALL SCRIPT ---------- #
 if [[ "$selected_profile" != "minimal" ]]; then
 	echo "Creating post-install script..."
 	cp ./arch-post-install.sh /mnt/home/$username/post_install.sh
-	chmod 777 /mnt/home/$username/post-install.sh
+	chmod 777 /mnt/home/$username/post_install.sh
 fi
 # ---------- CHROOT ---------- #
 read -p "Chroot into new system? (y/N) " do_chroot

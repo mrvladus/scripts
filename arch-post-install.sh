@@ -4,6 +4,11 @@ games='gamemode lib32-gamemode steam steam-native-runtime'
 apps='gnome-logs gnome-boxes gnome-calculator simple-scan godot qbittorrent telegram-desktop firefox mpv file-roller evince eog'
 aur_apps='onlyoffice-bin visual-studio-code-bin bottles extension-manager-git adw-gtk3-git protonvpn-gui'
 pkgs="$system $games $apps $aur_apps"
+# ---------- SU CHECK ---------- #
+if [ "$(whoami)" != "root" ]; then
+    echo "Run script as root!"
+    exit
+fi
 # ---------- ADD CHAOTIC AUR ---------- #
 read -p "Add Chaotic AUR? (Y/n) " add_aur
 if [[ "$add_aur" == "y" || "$add_aur" == "" ]]; then
