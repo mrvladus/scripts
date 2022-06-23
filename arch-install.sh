@@ -9,7 +9,7 @@ looks='ttf-{jetbrains-mono,roboto} papirus-icon-theme'
 desktop_base="$cli_programs $fstools $devel $phone $looks"
 lightdm="xorg-server lightdm lightdm-gtk-{greeter,greeter-settings}"
 # ---------- PROFILES ---------- #
-gnome="$desktop_base gdm gnome-{shell,control-center,remote-desktop,user-share,backgrounds,keyring,terminal,tweaks} rygel nautilus gst-plugins-good eog"
+gnome="$desktop_base gdm gnome-{shell,control-center,remote-desktop,user-share,backgrounds,keyring,terminal} power-profiles-daemon rygel nautilus gst-plugins-good"
 xfce="$desktop_base $lightdm thunar thunar-{volman,archive-plugin} xfce4-{panel,power-manager,session,settings,terminal,notifyd,screensaver,screenshooter,whiskermenu-plugin,xkb-plugin,pulseaudio-plugin} ristretto xfdesktop xfwm4 pavucontrol network-manager-applet arc-gtk-theme"
 minimal="$cli_programs"
 # ---------- CREDENTIALS ---------- #
