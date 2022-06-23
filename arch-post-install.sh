@@ -1,6 +1,6 @@
 #!/bin/bash
-apps='gnome-{logs,boxes,calculator} simple-scan godot qbittorrent telegram-desktop firefox mpv file-roller evince flatpak'
-aur_apps='onlyoffice-bin visual-studio-code-bin bottles timeshift-bin cloudflare-warp-bin'
+apps='gnome-{logs,boxes,calculator} simple-scan godot qbittorrent telegram-desktop firefox mpv file-roller evince eog'
+aur_apps='onlyoffice-bin visual-studio-code-bin bottles'
 if [[ $XDG_SESSION_DESKTOP == 'gnome' ]]; then
 	aur_apps+=" extension-manager-git adw-gtk3-git"
 elif [[ $XDG_SESSION_DESKTOP == 'xfce' ]]; then
