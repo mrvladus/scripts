@@ -1,4 +1,7 @@
 #!/bin/bash
+#----------------------------------#
+#     ARCH POST INSTALL SCRIPT     #
+#----------------------------------#
 system='yay'
 games='gamemode lib32-gamemode steam steam-native-runtime'
 apps='gnome-logs gnome-boxes gnome-calculator simple-scan godot qbittorrent telegram-desktop firefox mpv file-roller evince eog'
