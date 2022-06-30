@@ -14,7 +14,7 @@ def cmd(command: str = ''):
 	os.system(command)
 
 def chroot_cmd(command: str = ''):
-	os.system(f'arch-chroot /mnt {command}')
+	os.system(f'arch-chroot /mnt /bin/bash -c "{command}"')
 
 def create_file(text: str, path: str):
 	with open(path, 'w') as f:
@@ -25,8 +25,8 @@ def append_to_file(text: str, path: str):
 		f.write(text)
 # ---------- PACKAGES ---------- #
 base_system = 'base base-devel intel-ucode nano'
-cli_programs = 'bash-completion man git neofetch reflector android-tools flatpak'
-apps = 'qbittorrent firefox godot gnome-calculator eog file-roller simple-scan telegram-desktop code gnome-logs evince libreoffice-fresh mpv'
+cli_programs = 'bash-completion man git neofetch reflector android-tools'
+apps = 'qbittorrent firefox godot gnome-calculator eog file-roller simple-scan telegram-desktop code gnome-logs evince libreoffice-fresh mpv flatpak'
 gnome = 'gdm gnome-{shell,control-center,backgrounds,keyring,terminal} nautilus gst-plugins-good gvfs-{mtp,nfs} xdg-user-dirs-gtk ttf-{jetbrains-mono,roboto} papirus-icon-theme'
 # ---------- PROFILES ---------- #
 desktop = f'{cli_programs} {gnome} {apps} nvidia nvidia-settings'
@@ -60,7 +60,6 @@ if filesystem == 'ext4':
 	cmd(f'mkfs.ext4 -F -F {root_part}')
 	cmd(f'mount {root_part} /mnt')
 	cmd(f'mkdir -p /mnt/boot/efi')
-	cmd('')
 elif 'filesystem' == 'btrfs':
 	cmd(f'mkfs.btrfs -f {root_part}')
 	cmd(f'mount {root_part} /mnt')
@@ -92,9 +91,9 @@ find_and_replace('#en_US.UTF-8 UTF-8', 'en_US.UTF-8 UTF-8', '/mnt/etc/locale.gen
 chroot_cmd('locale-gen')
 create_file('LANG=en_US.UTF-8', '/mnt/etc/locale.conf')
 # ---------- CREATE USERS ---------- #
-chroot_cmd(f'echo "root:{password}" | chpasswd')
+chroot_cmd(f"echo 'root:{password}' | chpasswd")
 chroot_cmd(f'useradd -mG wheel {username}')
-chroot_cmd(f'echo "{username}:{password}" | chpasswd')
+chroot_cmd(f"echo '{username}:{password}' | chpasswd")
 find_and_replace('# %wheel ALL=(ALL:ALL) ALL', '%wheel ALL=(ALL:ALL) ALL', '/mnt/etc/sudoers')
 # ---------- HOSTNAME AND HOSTS ---------- #
 create_file(hostname, '/mnt/etc/hostname')
