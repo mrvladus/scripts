@@ -137,11 +137,13 @@ if [[ "$selected_profile" == "gnome" ]]; then
 	systemctl enable gdm
 fi
 EOF
+# ---------- COPY CONFIGS ---------- #
+cp ./configs/.bashrc /mnt/home/$username/
 # ---------- CREATE POST INSTALL SCRIPT ---------- #
 if [[ "$selected_profile" != "minimal" ]]; then
 	echo "Creating post-install script..."
-	cp ./arch-post-install.sh /mnt/home/$username/post_install.sh
-	chmod 777 /mnt/home/$username/post_install.sh
+	cp ./arch-post-install.sh /mnt/home/$username/
+	chmod 777 /mnt/home/$username/arch-post-install.sh
 fi
 # ---------- CHROOT ---------- #
 read -p "Chroot into new system? (y/N) " do_chroot
