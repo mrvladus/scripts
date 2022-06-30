@@ -31,6 +31,12 @@ gnome = 'gdm gnome-{shell,control-center,backgrounds,keyring,terminal} nautilus 
 # ---------- PROFILES ---------- #
 desktop = f'{cli_programs} {gnome} {apps} nvidia nvidia-settings'
 minimal = f'{cli_programs} open-vm-tools'
+# ---------- BEGIN INSTALLATION ---------- #
+print('''
+#-----------------------------#
+#     ARCH INSTALL SCRIPT     #
+#-----------------------------#
+''')
 # ---------- CREDENTIALS ---------- #
 username = input('Username: ')
 password = getpass.getpass()
