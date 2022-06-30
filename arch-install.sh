@@ -5,6 +5,7 @@ cli_programs='bash-completion man neofetch reflector'
 fstools='fuse2'
 phone='android-tools'
 looks='ttf-{jetbrains-mono,roboto} papirus-icon-theme'
+apps=''
 desktop_base="$cli_programs $fstools $phone $looks"
 # ---------- PROFILES ---------- #
 gnome="$desktop_base gdm gnome-{shell,control-center,remote-desktop,user-share,backgrounds,keyring,terminal} power-profiles-daemon rygel nautilus gst-plugins-good gvfs-{mtp,nfs} xdg-user-dirs-gtk"
