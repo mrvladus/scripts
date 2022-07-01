@@ -93,6 +93,7 @@ elif 'filesystem' == '2':
 	cmd(f'mount -o defaults,subvol=@log {root_part} /mnt/var/log')
 cmd(f'mkfs.vfat {boot_part}')
 cmd(f'mount {boot_part} /mnt/boot/efi')
+cmd('lsblk')
 pause()
 # ---------- UPDATE MIRRORS ---------- #
 cmd('echo "Updating mirrors..."')
