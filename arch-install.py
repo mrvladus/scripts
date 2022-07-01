@@ -11,7 +11,11 @@ def clear():
 	os.system('clear')
 
 def pause():
-	pause = input('Press [Enter] to continue...')
+	pause = input('Continue? (Y/n)') or 'y'
+	if pause == 'y':
+		return
+	else:
+		exit()
 
 def find_and_replace(line: str, new_line: str, file_path: str):
 	os.system(f"sed -i -e 's/{line}/{new_line}/g' {file_path}")
