@@ -1,9 +1,5 @@
 #!/bin/python
-#-----------------------------#
-#     ARCH INSTALL SCRIPT     #
-#-----------------------------#
 import os, getpass, shutil, datetime
-
 # Launch script execution timer
 start_time = datetime.datetime.now()
 # ---------- UTILS FUNCTIONS ---------- #
@@ -122,7 +118,7 @@ append_to_file(f'127.0.0.1 localhost\n::1\n127.0.1.1 {hostname}.localdomain {hos
 if filesystem == '2':
 	find_and_replace('MODULES=()', 'MODULES=(btrfs)', '/mnt/etc/mkinitcpio.conf')
 	find_and_replace('HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)', 'HOOKS=(base udev autodetect modconf block filesystems keyboard)', '/mnt/etc/mkinitcpio.conf')
-chroot_cmd('mkinitcpio -p linux')
+	chroot_cmd('mkinitcpio -p linux')
 # ---------- CONFIGURE PACMAN ---------- #
 find_and_replace('#ParallelDownloads', 'ParallelDownloads', '/mnt/etc/pacman.conf')
 find_and_replace('#Color', 'Color', '/mnt/etc/pacman.conf')
@@ -149,5 +145,4 @@ cmd('umount -R /mnt')
 print(f'''
 # --------------------- #
 # Installation is done! #
-# --------------------- #
-''')
+# --------------------- #''')
