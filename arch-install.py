@@ -34,7 +34,7 @@ def append_to_file(text: str, path: str):
 	with open(path, 'a') as f:
 		f.write(text)
 # ---------- PACKAGES ---------- #
-base_system = 'base base-devel intel-ucode nano'
+base_system = 'linux base base-devel intel-ucode nano'
 cli_programs = 'bash-completion man git neofetch reflector android-tools'
 apps = 'qbittorrent firefox godot gnome-calculator eog file-roller simple-scan telegram-desktop code gnome-logs evince libreoffice-fresh mpv flatpak'
 gnome = 'gdm gnome-{shell,control-center,backgrounds,keyring,terminal} nautilus gst-plugins-good gvfs-{mtp,nfs} xdg-user-dirs-gtk ttf-{jetbrains-mono,roboto} papirus-icon-theme'
