@@ -34,9 +34,9 @@ def append_to_file(text: str, path: str):
 	with open(path, 'a') as f:
 		f.write(text)
 # ---------- PACKAGES ---------- #
-base_system = 'linux base base-devel intel-ucode nano'
-cli_programs = 'bash-completion man git neofetch reflector android-tools'
-apps = 'qbittorrent firefox godot gnome-calculator eog file-roller simple-scan telegram-desktop code gnome-logs evince libreoffice-fresh mpv flatpak'
+base_system = 'linux linux-firmware base base-devel intel-ucode nano'
+cli_programs = 'bash-completion man git neofetch reflector'
+apps = 'qbittorrent firefox godot gnome-calculator eog file-roller simple-scan telegram-desktop code gnome-logs evince libreoffice-fresh mpv flatpak android-tools'
 gnome = 'gdm gnome-{shell,control-center,backgrounds,keyring,terminal} nautilus gst-plugins-good gvfs-{mtp,nfs} xdg-user-dirs-gtk ttf-{jetbrains-mono,roboto} papirus-icon-theme'
 # ---------- PROFILES ---------- #
 desktop = f'{cli_programs} {gnome} {apps} nvidia nvidia-settings'
@@ -54,10 +54,9 @@ password = getpass.getpass()
 hostname = input('Hostname (default: arch): ') or 'arch'
 # ---------- PROFILE ---------- #
 selected_profile = input('''
-Select profile:
-1. gnome
+1. gnome (default)
 2. minimal
-''') or '1'
+Select profile: ''') or '1'
 if selected_profile == '1':
 	profile = desktop
 else:
@@ -72,10 +71,9 @@ cmd('lsblk')
 boot_part = input('Boot partition (default: /dev/sda1): ') or '/dev/sda1'
 root_part = input('Root partition (default: /dev/sda2): ') or '/dev/sda2'
 filesystem = input('''
-Choose filesystem:
 1. ext4 (default)
 2. btrfs
-''') or '1'
+Choose filesystem: ''') or '1'
 if filesystem == '1':
 	cmd(f'mkfs.ext4 -F -F {root_part}')
 	cmd(f'mount {root_part} /mnt')
@@ -104,7 +102,6 @@ find_and_replace('#ParallelDownloads', 'ParallelDownloads', '/etc/pacman.conf')
 find_and_replace('#Color', 'Color', '/etc/pacman.conf')
 # ---------- INSTALL BASE ---------- #
 cmd(f'pacstrap /mnt {base_system}')
-pause()
 cmd('genfstab -U /mnt >> /mnt/etc/fstab')
 # ---------- SET TIMEZONE AND LOCALE ---------- #
 chroot_cmd('ln -sf /usr/share/zoneinfo/Europe/Moscow /etc/localtime')
@@ -113,13 +110,11 @@ find_and_replace('#ru_RU.UTF-8 UTF-8', 'ru_RU.UTF-8 UTF-8', '/mnt/etc/locale.gen
 find_and_replace('#en_US.UTF-8 UTF-8', 'en_US.UTF-8 UTF-8', '/mnt/etc/locale.gen')
 chroot_cmd('locale-gen')
 create_file('LANG=en_US.UTF-8', '/mnt/etc/locale.conf')
-pause()
 # ---------- CREATE USERS ---------- #
 chroot_cmd(f"echo 'root:{password}' | chpasswd")
 chroot_cmd(f'useradd -mG wheel {username}')
 chroot_cmd(f"echo '{username}:{password}' | chpasswd")
 find_and_replace('# %wheel ALL=(ALL:ALL) ALL', '%wheel ALL=(ALL:ALL) ALL', '/mnt/etc/sudoers')
-pause()
 # ---------- HOSTNAME AND HOSTS ---------- #
 create_file(hostname, '/mnt/etc/hostname')
 append_to_file(f'127.0.0.1 localhost\n::1\n127.0.1.1 {hostname}.localdomain {hostname}', '/mnt/etc/hosts')
@@ -128,7 +123,6 @@ if filesystem == '2':
 	find_and_replace('MODULES=()', 'MODULES=(btrfs)', '/mnt/etc/mkinitcpio.conf')
 	find_and_replace('HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)', 'HOOKS=(base udev autodetect modconf block filesystems keyboard)', '/mnt/etc/mkinitcpio.conf')
 chroot_cmd('mkinitcpio -p linux')
-pause()
 # ---------- CONFIGURE PACMAN ---------- #
 find_and_replace('#ParallelDownloads', 'ParallelDownloads', '/mnt/etc/pacman.conf')
 find_and_replace('#Color', 'Color', '/mnt/etc/pacman.conf')
@@ -140,7 +134,6 @@ find_and_replace('GRUB_TIMEOUT=5', 'GRUB_TIMEOUT=0', '/mnt/etc/default/grub')
 if profile == minimal:
 	find_and_replace('loglevel=3 quiet', 'loglevel=3 quiet nvidia-drm.modeset=1', '/mnt/etc/default/grub')
 chroot_cmd('grub-mkconfig -o /boot/grub/grub.cfg')
-pause()
 # ---------- INSTALL NETWORK MANAGER ---------- #
 chroot_cmd('pacman -S networkmanager networkmanager-openvpn --noconfirm')
 chroot_cmd('systemctl enable NetworkManager')
@@ -149,13 +142,12 @@ chroot_cmd(f'pacman -S {profile} --noconfirm')
 # ---------- ENABLE DISPLAY MANAGER ---------- #
 if selected_profile == '1':
 	chroot_cmd('systemctl enable gdm')
-pause()
 # ---------- COPY CONFIGS ---------- #
 shutil.copytree('./configs', f'/mnt/home/{username}/', dirs_exist_ok = True)
 # ---------- FINISH INSTALLATION ---------- #
 cmd('umount -R /mnt')
 print(f'''
-# --------------------------------------------------------------------- #
-# Installation is done! It took {datetime.datetime.now() - start_time}. #
-# --------------------------------------------------------------------- #
+# --------------------- #
+# Installation is done! #
+# --------------------- #
 ''')
