@@ -1,34 +1,9 @@
 #!/bin/python
-import os, getpass, shutil, datetime
-# Launch script execution timer
-start_time = datetime.datetime.now()
-# ---------- UTILS FUNCTIONS ---------- #
-def clear():
-	os.system('clear')
-
-def pause():
-	pause = input('Continue? (Y/n)') or 'y'
-	if pause == 'y':
-		return
-	else:
-		exit()
-
-def find_and_replace(line: str, new_line: str, file_path: str):
-	os.system(f"sed -i -e 's/{line}/{new_line}/g' {file_path}")
-
-def cmd(command: str = ''):
-	os.system(command)
-
-def chroot_cmd(command: str = ''):
-	os.system(f'arch-chroot /mnt /bin/bash -c "{command}"')
-
-def create_file(text: str, path: str):
-	with open(path, 'w') as f:
-		f.write(text)
-
-def append_to_file(text: str, path: str):
-	with open(path, 'a') as f:
-		f.write(text)
+#-----------------------------#
+#     ARCH INSTALL SCRIPT     #
+#-----------------------------#
+import os, getpass, shutil
+from lib.utils import *
 # ---------- PACKAGES ---------- #
 base_system = 'linux linux-firmware base base-devel intel-ucode nano'
 cli_programs = 'bash-completion man git neofetch reflector'
