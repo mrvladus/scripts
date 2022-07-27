@@ -7,8 +7,8 @@ from lib.utils import *
 # ---------- PACKAGES ---------- #
 base_system = 'linux linux-firmware base base-devel intel-ucode nano'
 cli_programs = 'bash-completion man git neofetch reflector'
-apps = 'qbittorrent firefox godot gnome-calculator eog file-roller simple-scan telegram-desktop code gnome-logs evince libreoffice-fresh mpv flatpak android-tools'
-gnome = 'gdm gnome-{shell,control-center,backgrounds,keyring,terminal} nautilus gst-plugins-good gvfs-{mtp,nfs} xdg-user-dirs-gtk ttf-{jetbrains-mono,roboto} papirus-icon-theme'
+apps = 'flatpak android-tools'
+gnome = 'gdm gnome-{shell,control-center,backgrounds,keyring} nautilus gst-plugins-good gvfs-{mtp,nfs} xdg-user-dirs-gtk ttf-jetbrains-mono papirus-icon-theme simple-scan'
 # ---------- PROFILES ---------- #
 desktop = f'{cli_programs} {gnome} {apps} nvidia nvidia-settings'
 minimal = f'{cli_programs} open-vm-tools'
