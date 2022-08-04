@@ -4,7 +4,7 @@
 #------------------------------------#
 from lib.utils import *
 # Packages
-debs = 'git neofetch alacarte simple-scan papirus-icon-theme flatpak fonts-jetbrains-mono mpv qbittorrent onlyoffice-desktopeditors code gnome-tweaks gnome-shell-extension-manager gjs libreoffice-gnome libreoffice telegram-desktop'
+debs = 'git neofetch alacarte simple-scan papirus-icon-theme flatpak fonts-jetbrains-mono mpv qbittorrent code gnome-tweaks gnome-shell-extension-manager gjs telegram-desktop'
 flatpaks = 'org.mozilla.firefox com.usebottles.bottles org.gnome.Boxes'
 # Cleanup
 cmd('sudo apt purge --auto-remove snapd gnome-characters gedit gnome-power-manager seahorse fonts-{beng,smc,thai-tlwg,g*,k*,la*,lk*,lo*,na*,or*,p*,s*,t*,y*} cups printer-driver-* -y')
