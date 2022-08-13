@@ -1,5 +1,5 @@
 from gi.repository import Adw, Gtk
-from data import data
+from data import data, settings
 
 
 class CredentialsGroup(Adw.PreferencesGroup):
@@ -7,11 +7,20 @@ class CredentialsGroup(Adw.PreferencesGroup):
 		super().__init__(title="Credentials")
 		# Email
 		self.email = Adw.EntryRow(title="Email")
+		self.email.connect("changed", self.email_changed)
 		self.add(self.email)
 		# Name
 		self.name = Adw.EntryRow(title="Name")
+		self.name.connect("changed", self.name_changed)
 		self.add(self.name)
 
+	def email_changed(self, widget):
+		settings["email"] = self.email.props.text
+	
+	def name_changed(self, widget):
+		settings["name"] = self.name.props.text
+		
+		
 
 class AutorizationGroup(Adw.PreferencesGroup):
 	def __init__(self):

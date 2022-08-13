@@ -2,7 +2,8 @@ import gi, os
 gi.require_version("Adw", "1")
 from gi.repository import Adw, Gtk
 # Modules
-from data import data
+from data import data, settings
+
 
 class ReposList(Gtk.Box):
 	def __init__(self):
@@ -34,13 +35,11 @@ class ReposList(Gtk.Box):
 
 	def update_status(self):
 		# Show status page if there is no repos
-		if self.carousel.get_n_pages() == 0:
+		if self.carousel.get_n_pages() == 0 and self.status.get_parent() != self.carousel:
 			self.carousel.append(self.status)
 		# Remove it othewise
-		else:
-			# Remove it only if it hasn't been already removed
-			if self.status.get_parent() == self.carousel:
-				self.carousel.remove(self.status)
+		elif self.status.get_parent() == self.carousel:
+			self.carousel.remove(self.status)
 
 
 class RepoPage(Adw.PreferencesGroup):
@@ -64,6 +63,7 @@ class RepoPage(Adw.PreferencesGroup):
 		self.set_header_suffix(self.delete_btn)
 		# Commit message
 		self.msg = Adw.EntryRow(title="Commit message")
+		self.msg.connect("changed", self.message_changed)
 		self.add(self.msg)
 		# Buttons
 		self.buttons = Gtk.Box(
@@ -73,16 +73,24 @@ class RepoPage(Adw.PreferencesGroup):
 			)
 		self.add(self.buttons)
 		# Commit button
-		self.commit_btn = Gtk.Button(label="Commit")
+		self.commit_btn = Gtk.Button(label="Commit", sensitive=False)
 		self.commit_btn.connect("clicked", self.commit_clicked)
 		self.buttons.append(self.commit_btn)
 		# Push button
-		self.push_btn = Gtk.Button(label="Push")
+		self.push_btn = Gtk.Button(label="Push", sensitive=False)
 		self.push_btn.connect("clicked", self.push_clicked)
 		self.buttons.append(self.push_btn)
 
+	def message_changed(self, widget):
+		if self.msg.props.text != '':
+			self.commit_btn.props.sensitive = True
+		else:
+			self.commit_btn.props.sensitive = False
+
 	def commit_clicked(self, button):
-		pass
+		if settings['email'] != '' and settings['name'] != '':
+			os.system(f"cd {self.props.description} && git add -A && git commit -m '{self.msg.props.text}' --author='{settings['name']} <{settings['email']}>'")
+			self.push_btn.props.sensitive = True
 
 	def push_clicked(self, button):
 		pass

@@ -12,7 +12,7 @@ class MainWindowContent(Gtk.Box):
 	def __init__(self):
 		super().__init__(orientation=Gtk.Orientation.VERTICAL)
 		self.append(HeaderBar())
-		self.append(ReposList())
+		self.append(Adw.ToastOverlay(child=ReposList()))
 
 
 class Application(Adw.Application):

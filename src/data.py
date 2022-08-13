@@ -5,3 +5,8 @@ data = {
 	"repos_list" : None,
 	"carousel" : None
 }
+
+settings = {
+	"email" : None,
+	"name" : None
+}

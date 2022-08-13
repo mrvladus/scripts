@@ -1,4 +1,5 @@
-from gi.repository import Gtk
+import os
+from gi.repository import Gtk, Adw
 # Data
 from data import data
 # Modules
@@ -36,10 +37,16 @@ class AddRepoBtn(Gtk.Button):
 			# Add page for each repo
 			path = self.dialog.get_file().get_path()
 			with open(data["repo_file"], "r+") as f:
-				if path not in f.read():
+				# TODO messages for each error
+				text = f.read()
+				if path not in text and os.path.exists(path + "/.git"):
 					f.write(path + "\n")
 					data["carousel"].append(RepoPage(path))
-			data["repos_list"].update_status()
+					data["repos_list"].update_status()
+				elif path in text:
+					data["repos_list"].get_parent().add_toast(Adw.Toast(title="Repository already added"))
+				elif not path in text and not os.path.exists(path + "/.git"):
+					data["repos_list"].get_parent().add_toast(Adw.Toast(title="Not a git repository"))
 		# Hide dialog
 		self.dialog.hide()
 
