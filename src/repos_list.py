@@ -2,8 +2,8 @@ import gi, os
 gi.require_version("Adw", "1")
 from gi.repository import Adw, Gtk
 # Modules
-from data import data, settings
-
+from data import data
+from settings import get_settings
 
 class ReposList(Gtk.Box):
 	def __init__(self):
@@ -88,9 +88,21 @@ class RepoPage(Adw.PreferencesGroup):
 			self.commit_btn.props.sensitive = False
 
 	def commit_clicked(self, button):
-		if settings['email'] != '' and settings['name'] != '':
-			os.system(f"cd {self.props.description} && git add -A && git commit -m '{self.msg.props.text}' --author='{settings['name']} <{settings['email']}>'")
-			self.push_btn.props.sensitive = True
+		toast_overlay = data["repos_list"].get_parent()
+		settings = get_settings()
+		# Check empty fields in the settings
+		if settings["email"] == '':
+			toast_overlay.add_toast(Adw.Toast(title="Email is not set"))
+			return
+		if settings["name"] == '':
+			toast_overlay.add_toast(Adw.Toast(title="Name is not set"))
+			return
+		# If all good run git command
+		os.system(f"cd {self.props.description} && git add -A && git commit -m '{self.msg.props.text}' --author='{settings['name']} <{settings['email']}>'")
+		# Set widgets state
+		self.commit_btn.props.sensitive = False
+		self.push_btn.props.sensitive = True
+		self.msg.props.text = ''
 
 	def push_clicked(self, button):
 		pass
