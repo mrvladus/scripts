@@ -4,7 +4,7 @@ echo '#     ARCH INSTALL SCRIPT     #'
 echo '#-----------------------------#'
 # APPS
 base_system='linux linux-firmware base base-devel intel-ucode nano btrfs-progs'
-cli_programs='bash-completion man neofetch reflector android-tools flatpak'
+cli_programs='bash-completion man neofetch reflector android-tools flatpak yay'
 dev='meson git'
 audio='wireplumber pipewire-alsa pipewire-pulse pipewire-jack'
 drivers='nvidia nvidia-settings'
@@ -38,7 +38,7 @@ mount -o subvol=@var $root /mnt/var
 mount $boot /mnt/boot/efi
 # MIRRORS
 reflector --sort rate --latest 20 --save /etc/pacman.d/mirrorlist -c Netherlands -p https -p http
-pacman -Syy
+pacman -Syy archlinux-keyring --noconfirm
 # PACMAN
 sed -i -e 's/#ParallelDownloads/ParallelDownloads/g' /etc/pacman.conf
 sed -i -e 's/#Color/Color/g' /etc/pacman.conf
