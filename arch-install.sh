@@ -8,7 +8,7 @@ cli_programs='bash-completion man neofetch reflector android-tools flatpak yay'
 dev='meson git'
 audio='wireplumber pipewire-alsa pipewire-pulse pipewire-jack'
 drivers='nvidia nvidia-settings'
-gnome='gdm gnome-{shell,control-center,backgrounds,keyring,tweaks,console,text-editor} nautilus gst-plugin-pipewire gst-plugins-good gvfs-mtp xdg-user-dirs-gtk ttf-jetbrains-mono ttf-ubuntu-font-family papirus-icon-theme'
+gnome='gdm gnome-shell gnome-control-center gnome-backgrounds gnome-keyring gnome-tweaks gnome-console gnome-text-editor nautilus gst-plugin-pipewire gst-plugins-good gvfs-mtp xdg-user-dirs-gtk ttf-jetbrains-mono ttf-ubuntu-font-family papirus-icon-theme'
 apps='visual-studio-code-bin simple-scan simple-scan firefox qbittorrent telegram-desktop gthumb file-roller extension-manager-git adw-gtk3-git dialect krita inkscape godot pitivi'
 # USER
 read -p "Username: " username
