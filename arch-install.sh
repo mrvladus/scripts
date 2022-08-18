@@ -36,6 +36,7 @@ mount -o noatime,commit=120,compress=zstd,subvol=@opt $root /mnt/opt
 mount -o noatime,commit=120,compress=zstd,subvol=@tmp $root /mnt/tmp
 mount -o subvol=@var $root /mnt/var
 mount $boot /mnt/boot/efi
+lsblk
 # MIRRORS
 reflector --sort rate --latest 20 --save /etc/pacman.d/mirrorlist -c Netherlands -p https -p http
 pacman -Syy archlinux-keyring --noconfirm
