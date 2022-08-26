@@ -15,28 +15,7 @@ read -p "Username: " username
 read -p "Password: " password
 read -p "Hostname: " hostname
 # PARTITION
-umount -R /mnt && clear
-cfdisk
-lsblk
-read -p "Boot partition: " boot
-mkfs.vfat $boot
-read -p "Root partition: " root
-mkfs.btrfs -f $root
-mount $root /mnt
-btrfs su cr /mnt/@
-btrfs su cr /mnt/@home
-btrfs su cr /mnt/@var
-btrfs su cr /mnt/@opt
-btrfs su cr /mnt/@tmp 
-umount /mnt
-mount -o noatime,commit=120,compress=zstd,subvol=@ $root /mnt
-mkdir -p /mnt/{boot/efi,home,var,opt,tmp}
-mount -o noatime,commit=120,compress=zstd,subvol=@home $root /mnt/home
-mount -o noatime,commit=120,compress=zstd,subvol=@opt $root /mnt/opt
-mount -o noatime,commit=120,compress=zstd,subvol=@tmp $root /mnt/tmp
-mount -o subvol=@var $root /mnt/var
-mount $boot /mnt/boot/efi
-lsblk
+bash ./lib/partition.sh
 # MIRRORS
 reflector --sort rate --latest 20 --save /etc/pacman.d/mirrorlist -c Netherlands -p https -p http
 pacman -Syy archlinux-keyring --noconfirm
@@ -66,6 +45,8 @@ sed -i -e 's/# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/g' /etc/sudoers
 echo $hostname > /etc/hostname
 echo -e '127.0.0.1 localhost\n::1\n127.0.1.1 $hostname.localdomain $hostname' >> /etc/hosts
 # ---------- CONFIGURE MKINITCPIO ---------- #
+sed -i -e 's/MODULES=()/MODULES=(btrfs)/g' /etc/mkinitcpio.conf
+sed -i -e 's/HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)/HOOKS=(base udev autodetect modconf block filesystems keyboard)/g' /etc/mkinitcpio.conf
 mkinitcpio -p linux
 # ---------- CONFIGURE PACMAN ---------- #
 sed -i -e 's/#ParallelDownloads/ParallelDownloads/g' /etc/pacman.conf
@@ -78,7 +59,7 @@ echo -e '\n[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist\n' >> /etc/
 pacman -Syy efibootmgr grub --noconfirm
 grub-install
 sed -i -e 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=0/g' /etc/default/grub
-sed -i -e 's/loglevel=3 quiet/loglevel=3 quiet nvidia-drm.modeset=1/g' /etc/default/grub
+sed -i -e 's/loglevel=3 quiet/loglevel=3 quiet vt.global_cursor_default=0 nvidia-drm.modeset=1/g' /etc/default/grub
 grub-mkconfig -o /boot/grub/grub.cfg
 # ---------- INSTALL NETWORK MANAGER ---------- #
 pacman -S networkmanager networkmanager-openvpn --noconfirm
@@ -87,6 +68,3 @@ systemctl enable NetworkManager
 pacman -S $cli_programs $dev $drivers $audio $gnome $apps --noconfirm
 systemctl enable gdm
 EOF
-echo "#-------------#"
-echo "#     DONE    #"
-echo "#-------------#"
