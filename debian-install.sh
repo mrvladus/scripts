@@ -15,11 +15,8 @@ read -p "Password: " password
 read -e -p "Hostname: " -i "debian" hostname
 
 # INSTALL DEPS
-if command -v pacman &> /dev/null; then
-	pacman -S arch-install-scripts debootstrap debian-archive-keyring debian-ports-archive-keyring --needed --noconfirm
-elif command -v apt &> /dev/null; then
-	apt install arch-install-scripts debootstrap -y
-fi
+apt update
+apt install arch-install-scripts debootstrap -y
 
 # PARTITION
 bash ./lib/partition.sh
@@ -31,7 +28,7 @@ read -e -p "Select branch: stable, testing, unstable." -i "testing" branch
 debootstrap --arch amd64 $branch /mnt https://deb.debian.org/debian
 
 # FSTAB
-genfstab -U /mnt >> /mnt/etc/fstab
+genfstab -U /mnt > /mnt/etc/fstab
 
 # APT
 sources="deb https://deb.debian.org/debian/ $branch main contrib non-free"
