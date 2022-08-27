@@ -21,11 +21,11 @@ if [[ "$fs_type" == "btrfs" ]]; then
 	btrfs su cr /mnt/@var
 	btrfs su cr /mnt/@tmp 
 	umount /mnt
-	mount -o noatime,commit=120,compress=zstd,subvol=@ $root /mnt
+	mount -o space_cache=v2,autodefrag,noatime,commit=120,compress=zstd,subvol=@ $root /mnt
 	mkdir -p /mnt/{boot/efi,home,var,tmp}
-	mount -o noatime,commit=120,compress=zstd,subvol=@home $root /mnt/home
-	mount -o noatime,commit=120,compress=zstd,subvol=@tmp $root /mnt/tmp
-	mount -o noatime,commit=120,compress=zstd,subvol=@var $root /mnt/var
+	mount -o space_cache=v2,autodefrag,noatime,commit=120,compress=zstd,subvol=@home $root /mnt/home
+	mount -o space_cache=v2,autodefrag,noatime,commit=120,compress=zstd,subvol=@tmp $root /mnt/tmp
+	mount -o space_cache=v2,autodefrag,noatime,commit=120,compress=zstd,subvol=@var $root /mnt/var
 elif [[ "$fs_type" == "ext4" ]]; then
 	mkfs.ext4 -F -F $root
 	mount $root /mnt

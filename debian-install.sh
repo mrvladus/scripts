@@ -1,11 +1,13 @@
 #!/bin/bash
 
+# START
+clear
 echo '#-------------------------------#'
 echo '#     DEBIAN INSTALL SCRIPT     #'
 echo '#-------------------------------#'
 
 # PACKAGES
-pkgs="linux-image-amd64 firmware-linux gnome-shell nautilus gnome-console flatpak simple-scan xdg-user-dirs-gtk gdm3 nvidia-driver bash-completion android-tools-adb android-tools-fastboot"
+pkgs="linux-image-amd64 firmware-linux gnome-shell nautilus gnome-console flatpak simple-scan xdg-user-dirs-gtk gdm3 nvidia-driver bash-completion android-tools-adb android-tools-fastboot neofetch"
 
 # USER
 read -p "Username: " username
@@ -46,6 +48,7 @@ mount --make-rslave --rbind /sys /mnt/sys
 mount --make-rslave --rbind /dev /mnt/dev
 mount --make-rslave --rbind /run /mnt/run
 chroot /mnt /bin/bash <<EOF
+
 # UPDATE REPOS
 apt update
 
@@ -71,5 +74,26 @@ HEREDOC
 # USERS AND PASSWORDS
 apt install sudo -y
 echo "root:$password" | chpasswd
+useradd -mG sudo $username
+echo "$username:$password" | chpasswd
+chsh -s /bin/bash $username
 
+# GRUB
+apt install grub-efi-amd64 -y
+grub-install /dev/sda
+update-grub
+
+# NETWORK MANAGER
+apt install network-manager -y
+
+# INSTALL PACKAGES
+apt install $pkgs -y
 EOF
+
+# UNMOUNT
+umount -R /mnt
+
+# FINISH
+echo '#--------------#'
+echo '#     DONE     #'
+echo '#--------------#'
