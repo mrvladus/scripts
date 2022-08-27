@@ -16,7 +16,7 @@ read -e -p "Hostname: " -i "debian" hostname
 
 # INSTALL DEPS
 if command -v pacman &> /dev/null; then
-	pacman -S arch-install-scripts debootstrap debian-archive-keyring --needed --noconfirm
+	pacman -S arch-install-scripts debootstrap debian-archive-keyring debian-ports-archive-keyring --needed --noconfirm
 elif command -v apt &> /dev/null; then
 	apt install arch-install-scripts debootstrap -y
 fi
