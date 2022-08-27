@@ -42,7 +42,7 @@ if [ "$branch" == "stable" ]; then
 elif [ "$branch" == "testing" ]; then
 	sources+="\ndeb https://security.debian.org/debian-security $branch-security main contrib non-free"
 fi
-echo -e $sources > /mnt/apt/sources.list
+echo -e $sources > /mnt/etc/apt/sources.list
 
 read -p "Enter to continue..." next
 # CHROOT
