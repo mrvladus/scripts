@@ -15,8 +15,11 @@ read -p "Password: " password
 read -e -p "Hostname: " -i "debian" hostname
 
 # INSTALL DEPS
-apt update
-apt install arch-install-scripts debootstrap -y
+if command -v pacman &> /dev/null; then
+	pacman -S arch-install-scripts debootstrap debian-archive-keyring debian-ports-archive-keyring --needed --noconfirm
+elif command -v apt &> /dev/null; then
+	apt install arch-install-scripts debootstrap -y
+fi
 
 # PARTITION
 bash ./lib/partition.sh
@@ -27,8 +30,10 @@ read -e -p "Select branch: stable, testing, unstable." -i "testing" branch
 # DEBOOTSTRAP
 debootstrap --arch amd64 $branch /mnt https://deb.debian.org/debian
 
+read -p "Enter to continue..." next
 # FSTAB
-genfstab -U /mnt > /mnt/etc/fstab
+echo "Generate FSTAB..."
+genfstab -U /mnt >> /mnt/etc/fstab
 
 # APT
 sources="deb https://deb.debian.org/debian/ $branch main contrib non-free"
@@ -39,6 +44,7 @@ elif [ "$branch" == "testing" ]; then
 fi
 echo -e $sources > /mnt/apt/sources.list
 
+read -p "Enter to continue..." next
 # CHROOT
 mount --make-rslave --rbind /proc /mnt/proc
 mount --make-rslave --rbind /sys /mnt/sys
@@ -48,17 +54,17 @@ chroot /mnt /bin/bash <<EOF
 
 # UPDATE REPOS
 apt update
-
+read -p "Enter to continue..." next
 # TIMEZONE
 dpkg-reconfigure tzdata
-
+read -p "Enter to continue..." next
 # LOCALE
 apt install locales -y
 dpkg-reconfigure locales
-
+read -p "Enter to continue..." next
 # HOSTNAME
 echo $hostname > /etc/hostname
-
+read -p "Enter to continue..." next
 # HOSTS
 cat > /etc/hosts << HEREDOC
 127.0.0.1 localhost
@@ -67,24 +73,25 @@ cat > /etc/hosts << HEREDOC
 ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
 HEREDOC
-
+read -p "Enter to continue..." next
 # USERS AND PASSWORDS
 apt install sudo -y
 echo "root:$password" | chpasswd
 useradd -mG sudo $username
 echo "$username:$password" | chpasswd
 chsh -s /bin/bash $username
-
+read -p "Enter to continue..." next
 # GRUB
 apt install grub-efi-amd64 -y
 grub-install /dev/sda
 update-grub
-
+read -p "Enter to continue..." next
 # NETWORK MANAGER
 apt install network-manager -y
-
+read -p "Enter to continue..." next
 # INSTALL PACKAGES
 apt install $pkgs -y
+read -p "Enter to continue..." next
 EOF
 
 # UNMOUNT
