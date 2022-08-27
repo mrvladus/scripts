@@ -12,7 +12,7 @@ fi
 lsblk
 # ROOT
 read -e -p "Root partition: " -i "/dev/sda2" root
-read -e -p "Select filesystem for root: btrfs, ext4." -i "btrfs" fs_type
+read -e -p "Select filesystem for root: btrfs, ext4. " -i "btrfs" fs_type
 if [[ "$fs_type" == "btrfs" ]]; then
 	mkfs.btrfs -f $root
 	mount $root /mnt

@@ -25,7 +25,7 @@ fi
 bash ./lib/partition.sh
 
 # SELECT BRANCH
-read -e -p "Select branch: stable, testing, unstable." -i "testing" branch
+read -e -p "Select branch: stable, testing, unstable. " -i "testing" branch
 
 # DEBOOTSTRAP
 debootstrap --arch amd64 $branch /mnt https://deb.debian.org/debian
