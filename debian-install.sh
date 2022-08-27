@@ -21,6 +21,8 @@ elif command -v apt &> /dev/null; then
 	apt install arch-install-scripts debootstrap -y
 fi
 
+read -p "Enter to continue..." next
+
 # PARTITION
 bash ./lib/partition.sh
 
@@ -29,6 +31,8 @@ read -e -p "Select branch: stable, testing, unstable. " -i "testing" branch
 
 # DEBOOTSTRAP
 debootstrap --arch amd64 $branch /mnt https://deb.debian.org/debian
+
+read -p "Enter to continue..." next
 
 # FSTAB
 genfstab -U /mnt >> /mnt/etc/fstab
@@ -52,12 +56,18 @@ chroot /mnt /bin/bash <<EOF
 # UPDATE REPOS
 apt update
 
+read -p "Enter to continue..." next
+
 # TIMEZONE
 dpkg-reconfigure tzdata
+
+read -p "Enter to continue..." next
 
 # LOCALE
 apt install locales -y
 dpkg-reconfigure locales
+
+read -p "Enter to continue..." next
 
 # HOSTNAME
 echo $hostname > /etc/hostname
@@ -78,13 +88,19 @@ useradd -mG sudo $username
 echo "$username:$password" | chpasswd
 chsh -s /bin/bash $username
 
+read -p "Enter to continue..." next
+
 # GRUB
 apt install grub-efi-amd64 -y
 grub-install /dev/sda
 update-grub
 
+read -p "Enter to continue..." next
+
 # NETWORK MANAGER
 apt install network-manager -y
+
+read -p "Enter to continue..." next
 
 # INSTALL PACKAGES
 apt install $pkgs -y
