@@ -21,8 +21,6 @@ elif command -v apt &> /dev/null; then
 	apt install arch-install-scripts debootstrap -y
 fi
 
-read -p "Enter to continue..." next
-
 # PARTITION
 bash ./lib/partition.sh
 
@@ -31,8 +29,6 @@ read -e -p "Select branch: stable, testing, unstable. " -i "testing" branch
 
 # DEBOOTSTRAP
 debootstrap --arch amd64 $branch /mnt https://deb.debian.org/debian
-
-read -p "Enter to continue..." next
 
 # FSTAB
 genfstab -U /mnt >> /mnt/etc/fstab
