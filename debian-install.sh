@@ -46,34 +46,11 @@ elif [ "$branch" == "testing" ]; then
 fi
 echo -e $sources > /mnt/etc/apt/sources.list
 
-# CHROOT
-mount --make-rslave --rbind /proc /mnt/proc
-mount --make-rslave --rbind /sys /mnt/sys
-mount --make-rslave --rbind /dev /mnt/dev
-mount --make-rslave --rbind /run /mnt/run
-chroot /mnt /bin/bash <<EOF
-
-# UPDATE REPOS
-apt update
-
-read -p "Enter to continue..." next
-
-# TIMEZONE
-dpkg-reconfigure tzdata
-
-read -p "Enter to continue..." next
-
-# LOCALE
-apt install locales -y
-dpkg-reconfigure locales
-
-read -p "Enter to continue..." next
-
 # HOSTNAME
-echo $hostname > /etc/hostname
+echo $hostname > /mnt/etc/hostname;
 
 # HOSTS
-cat > /etc/hosts << HEREDOC
+cat > /mnt/etc/hosts << HEREDOC
 127.0.0.1 localhost
 127.0.1.1 $hostname	
 ::1     localhost ip6-localhost ip6-loopback
@@ -81,30 +58,43 @@ ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
 HEREDOC
 
-# USERS AND PASSWORDS
-apt install sudo -y
-echo "root:$password" | chpasswd
-useradd -mG sudo $username
-echo "$username:$password" | chpasswd
-chsh -s /bin/bash $username
+# POST INSTALL
+post_install="
+# UPDATE REPOS
+apt update;
 
-read -p "Enter to continue..." next
+# TIMEZONE
+dpkg-reconfigure tzdata;
+
+# LOCALE
+apt install locales -y;
+dpkg-reconfigure locales;
+
+# USERS AND PASSWORDS
+apt install sudo -y;
+echo root:$password | chpasswd;
+useradd -mG sudo $username;
+echo $username:$password | chpasswd;
+chsh -s /bin/bash $username;
 
 # GRUB
-apt install grub-efi-amd64 -y
-grub-install /dev/sda
-update-grub
-
-read -p "Enter to continue..." next
+apt install grub-efi-amd64 -y;
+grub-install /dev/sda;
+update-grub;
 
 # NETWORK MANAGER
-apt install network-manager -y
-
-read -p "Enter to continue..." next
+apt install network-manager -y;
 
 # INSTALL PACKAGES
-apt install $pkgs -y
-EOF
+apt install $pkgs -y;
+"
+
+# CHROOT
+mount --make-rslave --rbind /proc /mnt/proc
+mount --make-rslave --rbind /sys /mnt/sys
+mount --make-rslave --rbind /dev /mnt/dev
+mount --make-rslave --rbind /run /mnt/run
+chroot /mnt su - -c "$post_install"
 
 # UNMOUNT
 umount -R /mnt
