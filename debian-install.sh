@@ -7,7 +7,7 @@ echo '#     DEBIAN INSTALL SCRIPT     #'
 echo '#-------------------------------#'
 
 # PACKAGES
-pkgs="linux-image-amd64 firmware-linux gnome-shell nautilus gnome-console flatpak simple-scan xdg-user-dirs-gtk gdm3 nvidia-driver bash-completion android-tools-adb android-tools-fastboot neofetch"
+pkgs="linux-image-amd64 firmware-linux gnome-shell nautilus gnome-console flatpak simple-scan xdg-user-dirs-gtk nvidia-driver bash-completion android-tools-adb android-tools-fastboot neofetch fonts-ubuntu fonts-jetbrains-mono"
 
 # USER
 read -p "Username: " username
@@ -18,7 +18,7 @@ read -e -p "Hostname: " -i "debian" hostname
 if command -v pacman &> /dev/null; then
 	pacman -S arch-install-scripts debootstrap debian-archive-keyring debian-ports-archive-keyring --needed --noconfirm
 elif command -v apt &> /dev/null; then
-	apt install arch-install-scripts debootstrap -y
+	apt install arch-install-scripts debootstrap btrfs-progs dosfstools -y
 fi
 
 # PARTITION
@@ -33,7 +33,7 @@ debootstrap --arch amd64 $branch /mnt https://deb.debian.org/debian
 # FSTAB
 genfstab -U /mnt >> /mnt/etc/fstab
 
-# APT
+# APT SOURCES
 sources="deb https://deb.debian.org/debian/ $branch main contrib non-free"
 if [ "$branch" == "stable" ]; then
 	sources+="\ndeb https://security.debian.org/debian-security $branch-security main contrib non-free\ndeb https://deb.debian.org/debian/ $branch-updates main contrib non-free\ndeb http://deb.debian.org/debian $branch-backports main contrib non-free"
@@ -54,7 +54,7 @@ ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
 HEREDOC
 
-# POST INSTALL
+# CHROOT COMMANDS (separate by ;)
 post_install="
 # UPDATE REPOS
 apt update;
@@ -76,10 +76,9 @@ chsh -s /bin/bash $username;
 # GRUB
 apt install grub-efi-amd64 -y;
 grub-install /dev/sda;
+sed -i -e 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=0/g' /etc/default/grub;
+sed -i -e 's/quiet/loglevel=3 quiet vt.global_cursor_default=0 nvidia-drm.modeset=1/g' /etc/default/grub;
 update-grub;
-
-# NETWORK MANAGER
-apt install network-manager -y;
 
 # INSTALL PACKAGES
 apt install $pkgs -y;
