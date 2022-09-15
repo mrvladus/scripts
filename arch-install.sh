@@ -8,8 +8,8 @@ cli_programs='bash-completion man neofetch reflector android-tools flatpak yay'
 dev='meson git'
 audio='wireplumber pipewire-alsa pipewire-pulse pipewire-jack'
 drivers='nvidia nvidia-settings'
-gnome='gdm gnome-shell gnome-control-center gnome-backgrounds gnome-keyring gnome-tweaks gnome-console gnome-text-editor nautilus gst-plugin-pipewire gst-plugins-good gvfs-mtp xdg-user-dirs-gtk ttf-jetbrains-mono ttf-ubuntu-font-family papirus-icon-theme'
-apps='onlyoffice-bin mpv visual-studio-code-bin simple-scan simple-scan firefox qbittorrent telegram-desktop gthumb file-roller extension-manager-git adw-gtk3-git dialect krita inkscape godot pitivi'
+gnome='gdm gnome-shell gnome-control-center gnome-backgrounds gnome-keyring gnome-tweaks gnome-terminal nautilus gst-plugin-pipewire gst-plugins-good gvfs-mtp xdg-user-dirs-gtk ttf-jetbrains-mono ttf-ubuntu-font-family papirus-icon-theme simple-scan adw-gtk3-git'
+apps='visual-studio-code-bin'
 # USER
 read -p "Username: " username
 read -p "Password: " password
@@ -68,3 +68,7 @@ systemctl enable NetworkManager
 pacman -S $cli_programs $dev $drivers $audio $gnome $apps --noconfirm
 systemctl enable gdm
 EOF
+# COPY CONFIGS
+cp -a ./configs/* /mnt/home/$username/
+# FINISH
+umount -R /mnt

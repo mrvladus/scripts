@@ -7,7 +7,7 @@ echo '#     DEBIAN INSTALL SCRIPT     #'
 echo '#-------------------------------#'
 
 # PACKAGES
-pkgs="linux-image-amd64 firmware-linux gnome-shell nautilus gnome-console flatpak simple-scan xdg-user-dirs-gtk nvidia-driver bash-completion android-tools-adb android-tools-fastboot neofetch fonts-ubuntu fonts-jetbrains-mono"
+pkgs="linux-image-amd64 firmware-linux gnome-shell nautilus gnome-console flatpak simple-scan xdg-user-dirs-gtk nvidia-driver firmware-misc-nonfree bash-completion android-tools-adb android-tools-fastboot neofetch fonts-ubuntu fonts-jetbrains-mono"
 
 # USER
 read -p "Username: " username
@@ -16,9 +16,10 @@ read -e -p "Hostname: " -i "debian" hostname
 
 # INSTALL DEPS
 if command -v pacman &> /dev/null; then
-	pacman -S arch-install-scripts debootstrap debian-archive-keyring debian-ports-archive-keyring --needed --noconfirm
-elif command -v apt &> /dev/null; then
-	apt install arch-install-scripts debootstrap btrfs-progs dosfstools -y
+	pacman -Sy arch-install-scripts debootstrap debian-archive-keyring debian-ports-archive-keyring --needed --noconfirm
+fi
+if command -v apt &> /dev/null; then
+	apt update && apt install arch-install-scripts debootstrap btrfs-progs dosfstools -y
 fi
 
 # PARTITION
@@ -28,7 +29,7 @@ bash ./lib/partition.sh
 read -e -p "Select branch: stable, testing, unstable. " -i "testing" branch
 
 # DEBOOTSTRAP
-debootstrap --arch amd64 $branch /mnt https://deb.debian.org/debian
+debootstrap --arch=amd64 --variant=minbase $branch /mnt https://deb.debian.org/debian
 
 # FSTAB
 genfstab -U /mnt >> /mnt/etc/fstab
