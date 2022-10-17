@@ -9,6 +9,7 @@ sudo update-grub
 sudo apt update
 # Cleanup
 sudo apt purge --auto-remove snapd gnome-{characters,calculator,font-viewer,power-manager,startup-applications,shell-extension-ubuntu-dock,shell-extension-desktop-icons-ng,system-monitor,logs} eog evince gedit seahorse file-roller fonts-{beng,g*,k*,la*,lk*,lo*,na*,or*,p*,s*,t*,y*} -y
+rm -rf ./snap
 # Papirus icons
 sudo add-apt-repository ppa:papirus/papirus -y
 # Distrobox
