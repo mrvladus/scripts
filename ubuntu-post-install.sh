@@ -17,6 +17,8 @@ sudo add-apt-repository ppa:michel-slm/distrobox -y
 # Debs
 sudo apt install --no-install-recommends neofetch -y
 sudo apt install simple-scan gnome-tweaks android-sdk-platform-tools flatpak fonts-jetbrains-mono gjs git papirus-icon-theme distrobox -y
+# Upgrade
+sudo apt upgrade -y
 
 # Flatpaks
 sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
@@ -27,3 +29,6 @@ sudo apt install nvidia-driver-515 -y
 sudo systemctl disable nvidia-suspend.service nvidia-resume.service nvidia-hibernate.service
 sudo chmod u+x /usr/share/screen-resolution-extra/nvidia-polkit
 sudo nvidia-xconfig
+
+# SETUP
+sudo systemctl disable NetworkManager-wait-online.service
