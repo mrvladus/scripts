@@ -8,18 +8,18 @@ sudo update-grub
 sudo apt update
 
 # Cleanup
-sudo apt purge --auto-remove snapd gnome-{characters,font-viewer,power-manager,startup-applications} eog fonts-{beng,g*,k*,la*,lk*,lo*,na*,or*,p*,s*,t*,y*} -y
+sudo apt purge --auto-remove snapd gnome-{characters,power-manager,startup-applications} eog fonts-{beng,g*,k*,la*,lk*,lo*,na*,or*,p*,s*,t*,y*} -y
 rm -rf ./snap
-
-# Install debs
-sudo apt install simple-scan gnome-tweaks android-sdk-platform-tools flatpak fonts-jetbrains-mono neofetch mpv qbittorrent telegram-desktop gthumb nvidia-driver-515 -y
 
 # Upgrade
 sudo apt upgrade -y
 
+# Install debs
+sudo apt install timeshift simple-scan android-sdk-platform-tools fonts-jetbrains-mono mpv qbittorrent gthumb ubuntu-restricted-extras code build-essential libasound2-dev mesa-common-dev libx11-dev libxrandr-dev libxi-dev xorg-dev libgl1-mesa-dev libglu1-mesa-dev nvidia-driver-520 -y
+
+
 # Flatpaks
 sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-flatpak install org.mozilla.firefox org.onlyoffice.desktopeditors com.visualstudio.code -y
 
 # NVIDIA DRIVER
 sudo systemctl disable nvidia-suspend.service nvidia-resume.service nvidia-hibernate.service
