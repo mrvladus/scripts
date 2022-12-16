@@ -1,2 +1,2 @@
 # Installation scripts
-Scripts for quick automatic ArchLinux and Debian installation
+Some scripts for faster setup
