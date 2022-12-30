@@ -29,6 +29,7 @@ flatpak install flathub org.qbittorrent.qBittorrent org.mozilla.firefox org.tele
 
 # nfetch
 wget -qO- https://raw.githubusercontent.com/mrvladus/nfetch/master/install.sh | sh
+
 # ---------- CONFIGURE GNOME ---------- #
 gsettings set org.gnome.desktop.wm.preferences button-layout ":minimize,maximize,close"
 gsettings set org.gnome.desktop.interface icon-theme "Papirus"
