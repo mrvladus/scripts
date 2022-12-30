@@ -20,13 +20,13 @@ echo keepcache=True | sudo tee -a /etc/dnf/dnf.conf
 sudo dnf upgrade --refresh -y
 
 # Install rpm's
-dnf install simple-scan papirus-icon-theme jetbrains-mono-fonts -y
+sudo dnf install simple-scan papirus-icon-theme jetbrains-mono-fonts -y
 
 # RPM Fusion
-dnf install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm -y
+sudo dnf install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm -y
 
 # Flathub
-flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 flatpak install flathub org.qbittorrent.qBittorrent org.mozilla.firefox org.telegram.desktop com.visualstudio.code com.mattjakeman.ExtensionManager org.gnome.TextEditor io.mpv.Mpv -y
 
 # ---------- CONFIGURE GNOME ---------- #
