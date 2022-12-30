@@ -2,7 +2,7 @@
 
 # ---------- CLEANUP ---------- #
 sudo dnf groupremove "Fonts" "Multimedia" "LibreOffice" "Firefox Web Browser" "Container Management" "Guest Desktop Agents" "Hardware Support" "Printing Support" -y
-sudo dnf remove gnome-{classic-session,text-editor,software,connections,photos,characters,contacts,tour} mediawriter cheese yelp totem baobab rhythmbox libreoffice* -y
+sudo dnf remove gnome-{classic-session,text-editor,software,connections,photos,characters,contacts,tour} mediawriter eog evince cheese yelp totem baobab rhythmbox libreoffice* -y
 sudo dnf autoremove -y
 sudo dnf clean all
 
