@@ -37,4 +37,4 @@ gsettings set org.gnome.desktop.interface monospace-font-name "JetBrains Mono Re
 # ---------- INSTALL NVIDIA DRIVER ---------- #
 #dnf install akmod-nvidia -y
 # Restore Plymouth
-#echo "options nvidia_drm modeset=1" >> /etc/modprobe.d/nvidia.conf && echo -e "add_drivers+=\" nvidia nvidia_modeset nvidia_uvm nvidia_drm \"\ninstall_items+=\" /etc/modprobe.d/nvidia.conf \"" > /etc/dracut.conf.d/nvidia.conf && dracut -f
+#echo "options nvidia_drm modeset=1" | sudo tee -a /etc/modprobe.d/nvidia.conf && echo -e "add_drivers+=\" nvidia nvidia_modeset nvidia_uvm nvidia_drm \"\ninstall_items+=\" /etc/modprobe.d/nvidia.conf \"" | sudo tee -a /etc/dracut.conf.d/nvidia.conf && dracut -f
