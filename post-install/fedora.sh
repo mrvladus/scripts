@@ -21,7 +21,7 @@ sudo dnf install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-releas
 sudo dnf upgrade --refresh -y
 
 # Install rpm's
-sudo dnf install simple-scan papirus-icon-theme jetbrains-mono-fonts wget nodejs -y
+sudo dnf install simple-scan papirus-icon-theme jetbrains-mono-fonts wget nodejs wireguard-tools -y
 
 # Flathub
 sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
