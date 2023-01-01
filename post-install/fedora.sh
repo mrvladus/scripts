@@ -2,7 +2,7 @@
 
 # ---------- CLEANUP ---------- #
 sudo dnf groupremove "Fonts" "Multimedia" "LibreOffice" "Firefox Web Browser" "Container Management" "Guest Desktop Agents" "Hardware Support" "Printing Support" -y
-sudo dnf remove gnome-{classic-session,text-editor,software,connections,photos,characters,contacts,tour} mediawriter eog evince cheese yelp totem baobab rhythmbox libreoffice* -y
+sudo dnf remove gnome-{classic-session,text-editor,software,connections,photos,characters,contacts,tour,boxes,weather,clocks} mediawriter eog evince cheese yelp totem baobab rhythmbox libreoffice* -y
 sudo dnf autoremove -y
 sudo dnf clean all
 
@@ -25,7 +25,7 @@ sudo dnf install simple-scan papirus-icon-theme jetbrains-mono-fonts wget nodejs
 
 # Flathub
 sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-flatpak install flathub org.qbittorrent.qBittorrent org.mozilla.firefox org.telegram.desktop com.visualstudio.code com.mattjakeman.ExtensionManager org.gnome.TextEditor io.mpv.Mpv -y
+flatpak install flathub org.qbittorrent.qBittorrent org.mozilla.firefox org.telegram.desktop com.visualstudio.code com.mattjakeman.ExtensionManager org.gnome.TextEditor io.mpv.Mpv org.gnome.gThumb -y
 
 # nfetch
 wget -qO- https://raw.githubusercontent.com/mrvladus/nfetch/master/install.sh | sh
@@ -41,5 +41,5 @@ gsettings set org.gnome.desktop.interface monospace-font-name "JetBrains Mono Re
 #echo "options nvidia_drm modeset=1" | sudo tee -a /etc/modprobe.d/nvidia.conf && echo -e "add_drivers+=\" nvidia nvidia_modeset nvidia_uvm nvidia_drm \"\ninstall_items+=\" /etc/modprobe.d/nvidia.conf \"" | sudo tee -a /etc/dracut.conf.d/nvidia.conf && dracut -f
 
 # ---------- BASH ALIASES ---------- #
-echo "" >> .bash_aliases
+#echo "" >> .bash_aliases
 echo "up='sudo dnf upgrade --refresh -y && flatpak update -y'" >> .bash_aliases
