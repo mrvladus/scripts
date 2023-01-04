@@ -5,7 +5,7 @@ wget -qO- https://raw.githubusercontent.com/mrvladus/nfetch/master/install.sh | 
 echo nfetch >> .bashrc
 
 # Cleanup
-sudo apt autopurge gedit geary gnome-contacts gnome-power-manager gnome-startup-applications eog gnome-characters totem libreoffice* -y
+sudo apt autopurge gedit geary gnome-contacts gnome-power-manager totem libreoffice* -y
 
 # Update
 sudo apt update && sudo apt upgrade -y
