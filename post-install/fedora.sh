@@ -23,7 +23,7 @@ sudo dnf install papirus-icon-theme jetbrains-mono-fonts wireguard-tools gnome-c
 sudo flatpak remote-delete flathub
 sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 sudo flatpak remote-modify --enable flathub
-flatpak install flathub org.qbittorrent.qBittorrent org.mozilla.firefox org.telegram.desktop com.visualstudio.code com.mattjakeman.ExtensionManager org.gnome.TextEditor io.mpv.Mpv org.gnome.Calendar org.gnome.gThumb org.gnome.Evince com.github.johnfactotum.Foliate com.rafaelmardojai.Blanket org.onlyoffice.desktopeditors org.gnome.Calculator org.kde.krita org.kde.kdenlive com.github.tchx84.Flatseal -y
+flatpak install flathub org.qbittorrent.qBittorrent org.mozilla.firefox org.telegram.desktop com.visualstudio.code com.mattjakeman.ExtensionManager org.gnome.TextEditor io.mpv.Mpv org.gnome.Calendar org.gnome.gThumb org.gnome.Evince com.github.johnfactotum.Foliate com.rafaelmardojai.Blanket org.onlyoffice.desktopeditors org.gnome.Calculator org.kde.krita org.kde.kdenlive com.github.tchx84.Flatseal app.drey.Dialect -y
 
 # ---------- CONFIGURE GNOME ---------- #
 gsettings set org.gnome.desktop.wm.preferences button-layout ":minimize,maximize,close"
