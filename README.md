@@ -1,2 +1,2 @@
-# Installation scripts
+# Scripts
 Some scripts for faster setup
