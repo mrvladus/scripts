@@ -1,0 +1,13 @@
+[Unit]
+Description=Suspend fix for ath11k_pci
+Before=sleep.target
+StopWhenUnneeded=yes
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=-modprobe -r ath11k_pci
+ExecStop=-modprobe ath11k_pci
+
+[Install]
+WantedBy=sleep.target
